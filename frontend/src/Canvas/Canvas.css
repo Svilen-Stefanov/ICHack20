@@ -1,21 +1,21 @@
 .canvas-container {
     padding-top: 100px;
     width: 100%;
+    height: 100vh;
     text-align: center;
     display: inline-block;
     margin-left: auto;
     margin-right: auto;
-    display: flex;
-    flex-direction: row;
 }
 .canvas-left { 
-    display: flex;
-    flex-basis:50%;
+    float: left;
+    width: 50%;
+    height: 100%;
 }
 
 .canvas-right {
-    display: flex;
-    flex-basis:50%;
+    float: left;
+    width: 50%;
 }
 
 .canvas-canvas {

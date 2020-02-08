@@ -1,121 +1,118 @@
+// canvas.js
+
 import React, { Component } from 'react';
-import SchoolIcon from '@material-ui/icons/School';
-
-import './Canvas.css';
-
+import './Canvas.css'
 class Canvas extends Component {
-    constructor() {
-        super()
-        this.drawing = false;
-        this.current = {
-            color: 'black'
-        };
-
+    constructor(props) {
+        super(props);
+        this.onMouseDown = this.onMouseDown.bind(this);
+        this.onMouseMove = this.onMouseMove.bind(this);
+        this.endPaintEvent = this.endPaintEvent.bind(this);
+        this.state = {show: false};
     }
-    componentDidMount() {
-        this.canvas = document.getElementById('canvas');
-        this.context = this.canvas.getContext('2d');
-        let mousePos = (e) => {
-            let x = e.offsetX;
-            let y = e.offsetY;
-            console.log(x, y, e)
-            return [x, y];
-        }
-        let onMouseDown = (e) => {
-            this.drawing = true;
-            [this.current.x, this.current.y] = mousePos(e);
-        };
+    isPainting = false;
+    // Different stroke styles to be used for user and guest
+    userStrokeStyle = '#EE92C2';
+    guestStrokeStyle = '#F0C987';
+    line = [];
+    prevPos = { offsetX: 0, offsetY: 0 };
 
-        let onMouseUp = (e) => {
-            if (!this.drawing) { return; }
-            this.drawing = false;
-            let [nextX, nextY] = mousePos(e);
-            drawLine(this.current.x, this.current.y, nextX, nextY, this.current.color, true);
-            [this.current.x, this.current.y] = [nextX, nextY];
-        }
+    onMouseDown({ nativeEvent }) {
+        const { offsetX, offsetY } = nativeEvent;
+        this.isPainting = true;
+        this.prevPos = { offsetX, offsetY };
+    }
 
-        let onMouseMove = (e) => {
-            if (!this.drawing) { return; }
-            let [nextX, nextY] = mousePos(e);
-            drawLine(this.current.x, this.current.y, nextX, nextY, this.current.color, true);
-            [this.current.x, this.current.y] = [nextX, nextY];
-        }
-
-        let onColorUpdate = (e) => {
-            this.current.color = e.target.className.split(' ')[1];
-        }
-
-        // limit the number of events per second
-        let throttle = (callback, delay) => {
-            var previousCall = new Date().getTime();
-            return () => {
-                var time = new Date().getTime();
-                if ((time - previousCall) >= delay) {
-                    previousCall = time;
-                    callback.apply(null, arguments);
-                }
+    onMouseMove({ nativeEvent }) {
+        if (this.isPainting) {
+            const { offsetX, offsetY } = nativeEvent;
+            const offSetData = { offsetX, offsetY };
+            // Set the start and stop position of the paint event.
+            const positionData = {
+                start: { ...this.prevPos },
+                stop: { ...offSetData },
             };
-        };
-
-        let onDrawingEvent = (data) => {
-            var w = this.canvas.width;
-            var h = this.canvas.height;
-            drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color);
+            // Add the position to the line array
+            this.line = this.line.concat(positionData);
+            this.paint(this.prevPos, offSetData, this.userStrokeStyle);
         }
-
-        // make the canvas fill its parent
-        let onResize = () => {
-            // this.canvas.width = window.innerWidth;
-            // this.canvas.height = window.innerHeight;
-        }
-
-
-        let drawLine = (x0, y0, x1, y1, color, emit) => {
-            this.context.beginPath();
-            this.context.moveTo(x0, y0);
-            this.context.lineTo(x1, y1);
-            this.context.strokeStyle = color;
-            this.context.lineWidth = 1;
-            this.context.stroke();
-            this.context.closePath();
-            console.log(x0, y0, x1, y1);
-            if (!emit) { return; }
-            var w = this.canvas.width;
-            var h = this.canvas.height;
-
-            // socket.emit('drawing', {
-            //   x0: x0 / w,
-            //   y0: y0 / h,
-            //   x1: x1 / w,
-            //   y1: y1 / h,
-            //   color: color
-            // });
-        }
-
-        this.canvas.addEventListener('mousedown', function (e) { onMouseDown(e); }.bind(this), false);
-        this.canvas.addEventListener('mouseup', function (e) { onMouseUp(e); }.bind(this), false);
-        this.canvas.addEventListener('mouseout', function (e) { onMouseUp(e); }.bind(this), false);
-        this.canvas.addEventListener('mousemove', function (e) { throttle(onMouseMove(e), 10) }.bind(this), false);
-
-        //Touch support for mobile devices
-        this.canvas.addEventListener('touchstart', function (e) { onMouseDown(e); }.bind(this), false);
-        this.canvas.addEventListener('touchend', function (e) { onMouseUp(e); }.bind(this), false);
-        this.canvas.addEventListener('touchcancel', function (e) { onMouseUp(e); }.bind(this), false);
-        this.canvas.addEventListener('touchmove', function (e) { throttle(onMouseMove(e), 10) }.bind(this), false);
-
- 
     }
+    endPaintEvent() {
+        if (this.isPainting) {
+            this.isPainting = false;
+            //   this.sendPaintData();
+        }
+    }
+    paint(prevPos, currPos, strokeStyle) {
+        const { offsetX, offsetY } = currPos;
+        const { offsetX: x, offsetY: y } = prevPos;
+
+        this.ctx.beginPath();
+        this.ctx.strokeStyle = strokeStyle;
+        // Move the the prevPosition of the mouse
+        this.ctx.moveTo(x, y);
+        // Draw a line to the current position of the mouse
+        this.ctx.lineTo(offsetX, offsetY);
+        // Visualize the line using the strokeStyle
+        this.ctx.stroke();
+        this.prevPos = { offsetX, offsetY };
+    }
+
+    //   async sendPaintData() {
+    //     const body = {
+    //       line: this.line,
+    //       userId: this.userId,
+    //     };
+    //     // We use the native fetch API to make requests to the server
+    //     const req = await fetch('http://localhost:4000/paint', {
+    //       method: 'post',
+    //       body: JSON.stringify(body),
+    //       headers: {
+    //         'content-type': 'application/json',
+    //       },
+    //     });
+    //     const res = await req.json();
+    //     this.line = [];
+    //   }
+
+    componentDidMount() {
+        // Here we set up the properties of the canvas element. 
+
+        console.log(this.canvas.width, this.canvas.height);
+
+        this.ctx = this.canvas.getContext('2d');
+        this.ctx.lineJoin = 'round';
+        this.ctx.lineCap = 'round';
+        this.ctx.lineWidth = 5;
+        setTimeout(() => {
+            this.canvas.width = document.getElementById('outer').offsetWidth;
+            this.canvas.height = document.getElementById('outer').offsetHeight;
+            this.setState({show: true});
+        }, 1000);
+
+    }
+    componentDidUpdate() {
+    }
+
     render() {
         return (
             <main className="canvas-container">
-                <div className="canvas-left">
-                    <canvas id="canvas" className="canvas-canvas"></canvas>
-
+                <div  id="outer"  className="canvas-left">
+                    <canvas id="canvas"
+                        // We use the ref attribute to get direct access to the canvas element. 
+                        ref={(ref) => (this.canvas = ref)}
+                        style={{ background: 'black',
+                                visibility: this.state.show ? 'visible' : 'hidden' 
+                               }}
+                        onMouseDown={this.onMouseDown}
+                        onMouseLeave={this.endPaintEvent}
+                        onMouseUp={this.endPaintEvent}
+                        onMouseMove={this.onMouseMove}
+                    />
                 </div>
-                <div className="canvas-right">Right</div>
+          
             </main>
         );
     }
 }
-
 export default Canvas;
