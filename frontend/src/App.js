@@ -1,22 +1,17 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
+import axios from 'axios';
 import { Switch, Route } from 'react-router-dom'
 
 import Navbar from './Navbar/Navbar';
 import Profiles from './Profiles/Profiles';
 import VideoCall from './VideoCall/VideoCall';
 
+import { useStateWithLocalStorage } from './utils'
+
 import './App.css';
 
-const useStateWithLocalStorage = localStorageKey => {
-  const [value, setValue] = React.useState(
-    localStorage.getItem(localStorageKey) || ''
-  );
-  React.useEffect(() => {
-    localStorage.setItem(localStorageKey, value);
-  }, [value]);
-  return [value, setValue];
-};
+axios.defaults.baseURL = "http://127.0.0.1:5000"
 
 function App() {
   /* Manage the account Id stored in the local session.
@@ -25,9 +20,25 @@ function App() {
   const [accountId, setAccountId] = useStateWithLocalStorage(
     'accountId'
   );
+  const [webexId, setWebexId] = useStateWithLocalStorage(
+    'webexId'
+  );
 
-  /* On entry set accountId to 0 */
-  // setAccountId(0)
+  /* TODO: Currently Account ID is hardcoded to 0 */
+  useEffect(() => {
+    setAccountId(0)
+
+    /* Ensure global axios configuration will inject the accountId as a header */
+    axios.defaults.headers.common = {
+      'Account-Id': accountId
+    };
+
+    /* Retrieve webex ID from backend and store in local storage */
+    axios.get('/profile/' + accountId)
+      .then(res => {
+        setWebexId(res.data.brief.webex_id)
+      });
+  }, [accountId]);
 
   return (
     <div className="App">

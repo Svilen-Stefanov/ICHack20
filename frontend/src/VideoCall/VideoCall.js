@@ -1,15 +1,23 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import Webex from 'webex';
+
+import { useStateWithLocalStorage } from '../utils'
 
 import "./VideoCall.css";
 
-class VideoCall extends Component {
-    componentDidMount() {
+function VideoCall() {
+
+    const [webexId, setWebexId] = useStateWithLocalStorage(
+        'webexId'
+    );
+
+    /* Execute this code once the component has loaded */
+    useEffect(() => {
         /* All of the above code was copied over from the Webex docs.
            Following the steps in: https://developer.webex.com/docs/sdks/browser */
         const webex = Webex.init({
             credentials: {
-                access_token: `NGU0YjQ1MmItNTJhYS00OTE1LTgwNTktYjliNDJiODUxZjAyZThhYTVkN2MtMjFm_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0`
+                access_token: webexId
             }
         });
 
@@ -104,36 +112,33 @@ class VideoCall extends Component {
                     console.error(error);
                 });
         });
-    }
+    }, [])
 
-    render() {
+    return (
+        <main className="Webex-container">
+            <h1>Meetings Quick Start</h1>
+            <p>This sample demonstrates how to start a meeting using Webex JS-SDK in the browser.</p>
 
-        return (
-            <main className="Webex-container">
-                <h1>Meetings Quick Start</h1>
-                <p>This sample demonstrates how to start a meeting using Webex JS-SDK in the browser.</p>
+            <form id="destination">
+                <input
+                    id="invitee"
+                    name="invitee"
+                    placeholder="Person ID or Email Address or SIP URI or Room ID"
+                    type="text" />
+                <input title="join" type="submit" value="join" />
+            </form>
 
-                <form id="destination">
-                    <input
-                        id="invitee"
-                        name="invitee"
-                        placeholder="Person ID or Email Address or SIP URI or Room ID"
-                        type="text" />
-                    <input title="join" type="submit" value="join" />
-                </form>
-
-                <div className="Webex-video-container">
-                    <video className="Webex-video-stream" id="self-view" muted autoPlay></video>
-                    <div className="Webex-video-stream">
-                        <audio id="remote-view-audio" autoPlay></audio>
-                        <video id="remote-view-video" autoPlay></video>
-                    </div>
+            <div className="Webex-video-container">
+                <video className="Webex-video-stream" id="self-view" muted autoPlay></video>
+                <div className="Webex-video-stream">
+                    <audio id="remote-view-audio" autoPlay></audio>
+                    <video id="remote-view-video" autoPlay></video>
                 </div>
+            </div>
 
-                <button id="hangup" title="hangup" type="button">cancel/hangup</button>
-            </main>
-        );
-    }
+            <button id="hangup" title="hangup" type="button">cancel/hangup</button>
+        </main>
+    );
 }
 
 export default VideoCall;
