@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
 import SchoolIcon from '@material-ui/icons/School';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import TextField from '@material-ui/core/TextField';
 
 import './Navbar.css';
 
 class Navbar extends Component {
-    render(){
-        return(
+    render() {
+        return (
             <nav className="Navbar-container">
                 <div className="Navbar-logo">
                     <h1> <SchoolIcon /> Study Buddy</h1>
                 </div>
-
+                <TextField id="outlined-basic" label="Outlined" variant="outlined" />
                 <ul className="Navbar-items">
                     <li>Friends</li>
                     <li>item 2</li>
-                    <li><AccountBoxIcon size={"inherit"}/></li>
+                    <li><AccountBoxIcon size={"inherit"} /></li>
                 </ul>
             </nav>
         );

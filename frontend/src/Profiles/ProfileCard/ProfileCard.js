@@ -25,8 +25,8 @@ class ProfileCard extends Component {
                 <h2>skills</h2>
                 <ul>{skillsList}</ul>
                 <div className="ProfileCard-footer">
-                    <Fab className="ProfileCard-connectBtn" color={"primary"} variant={"extended"}><PersonAddIcon /> Connect</Fab>
-                    <Fab className="ProfileCard-fullProfileBtn" variant={"extended"}>Full Profile</Fab>
+                    <Fab className="ProfileCard-connect" color={"primary"} variant={"extended"}><PersonAddIcon /> Connect</Fab>
+                    <Fab className="ProfileCard-fullProfile" color={"primary"} variant={"extended"}>Full Profile</Fab>
                 </div>
             </div>
         );
