@@ -15,3 +15,8 @@
     width: 50%;
     height: 50%;
 }
+
+.ProfileCard-container ul {
+    list-style: none;
+    text-align: left;
+}

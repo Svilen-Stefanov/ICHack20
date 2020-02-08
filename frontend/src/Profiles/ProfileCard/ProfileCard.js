@@ -1,17 +1,23 @@
 import React, { Component } from 'react';
-import Card from '@material-ui/core/Card';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
 
 import "./ProfileCard.css";
 
 class ProfileCard extends Component {
     render() {
-        let { name, age, imgSrc, skills } = this.props.data;
+        let { name, age, imgUrl, institution, skills } = this.props.data;
+        const skillsList = this.props.data.skills.map (skill => (
+            <li><CheckBoxIcon fontSize={"small"}/> {skill.skill_name}: {skill.experience_level}</li>
+        ));
         return (
         <div className="ProfileCard-container">
-            <h2>{name}</h2>
-            <img src={imgSrc}/>
-            <p>wkejfnkwnef</p>
-            <p>wkefnkwenfkj</p>
+            <PersonAddIcon />
+            <h2>{name} ({age})</h2>
+            <img src={imgUrl}/>
+            <h2>{institution}</h2>
+            <h2>skills</h2>
+            <ul>{skillsList}</ul>
         </div>
         );
     }

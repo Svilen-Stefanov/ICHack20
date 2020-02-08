@@ -10,20 +10,34 @@ class Profiles extends Component {
             {
                 name: "Eddy",
                 age: "20",
-                imgSrc: "https://images.unsplash.com/photo-1517070208541-6ddc4d3efbcb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80",
-                skills: ["maths", "physics"]
+                imgUrl: "https://images.unsplash.com/photo-1517070208541-6ddc4d3efbcb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80",
+                institution: "Imperial College London",
+                skills: [ 
+                    {
+                        skill_name: "Maths", 
+                        experience_level: "Intermediate" 
+                    }, 
+                    {
+                        skill_name: "Physics", 
+                        experience_level: "Beginner" 
+                    }
+                ]
             },
             {
                 name: "Eddy",
                 age: "20",
-                imgSrc: "https://images.unsplash.com/photo-1517070208541-6ddc4d3efbcb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80",
-                skills: ["maths", "physics"]
-            },
-            {
-                name: "Eddy",
-                age: "20",
-                imgSrc: "https://images.unsplash.com/photo-1517070208541-6ddc4d3efbcb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80",
-                skills: ["maths", "physics"]
+                imgUrl: "https://images.unsplash.com/photo-1517070208541-6ddc4d3efbcb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80",
+                institution: "Imperial College London",
+                skills: [ 
+                    {
+                        skill_name: "Maths", 
+                        experience_level: "Intermediate" 
+                    }, 
+                    {
+                        skill_name: "Physics", 
+                        experience_level: "Beginner" 
+                    }
+                ]
             }
             
         ]
