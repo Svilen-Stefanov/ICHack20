@@ -1,14 +1,17 @@
 // canvas.js
 
 import React, { Component } from 'react';
+import io from 'socket.io-client';
+
 import './Canvas.css'
+
 class Canvas extends Component {
     constructor(props) {
         super(props);
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
         this.endPaintEvent = this.endPaintEvent.bind(this);
-        this.state = {show: false};
+        this.state = { show: false };
     }
     isPainting = false;
     // Different stroke styles to be used for user and guest
@@ -40,7 +43,7 @@ class Canvas extends Component {
     endPaintEvent() {
         if (this.isPainting) {
             this.isPainting = false;
-            //   this.sendPaintData();
+            this.sendPaintData();
         }
     }
     paint(prevPos, currPos, strokeStyle) {
@@ -58,22 +61,13 @@ class Canvas extends Component {
         this.prevPos = { offsetX, offsetY };
     }
 
-    //   async sendPaintData() {
-    //     const body = {
-    //       line: this.line,
-    //       userId: this.userId,
-    //     };
-    //     // We use the native fetch API to make requests to the server
-    //     const req = await fetch('http://localhost:4000/paint', {
-    //       method: 'post',
-    //       body: JSON.stringify(body),
-    //       headers: {
-    //         'content-type': 'application/json',
-    //       },
-    //     });
-    //     const res = await req.json();
-    //     this.line = [];
-    //   }
+    async sendPaintData() {
+        const body = {
+            line: this.line
+        };
+
+        this.line = [];
+    }
 
     componentDidMount() {
         // Here we set up the properties of the canvas element. 
@@ -87,8 +81,11 @@ class Canvas extends Component {
         setTimeout(() => {
             this.canvas.width = document.getElementById('outer').offsetWidth;
             this.canvas.height = document.getElementById('outer').offsetHeight;
-            this.setState({show: true});
+            this.setState({ show: true });
         }, 1000);
+        
+        io.connect('localhost:5000');
+        // socket.emit('my_event', {data: 'I\'m connected!'});
 
     }
     componentDidUpdate() {
@@ -97,20 +94,21 @@ class Canvas extends Component {
     render() {
         return (
             <main className="canvas-container">
-                <div  id="outer"  className="canvas-left">
+                <div id="outer" className="canvas-left">
                     <canvas id="canvas"
                         // We use the ref attribute to get direct access to the canvas element. 
                         ref={(ref) => (this.canvas = ref)}
-                        style={{ background: 'black',
-                                visibility: this.state.show ? 'visible' : 'hidden' 
-                               }}
+                        style={{
+                            background: 'black',
+                            visibility: this.state.show ? 'visible' : 'hidden'
+                        }}
                         onMouseDown={this.onMouseDown}
                         onMouseLeave={this.endPaintEvent}
                         onMouseUp={this.endPaintEvent}
                         onMouseMove={this.onMouseMove}
                     />
                 </div>
-          
+
             </main>
         );
     }
