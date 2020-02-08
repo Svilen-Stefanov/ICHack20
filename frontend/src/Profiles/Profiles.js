@@ -4,6 +4,7 @@ import uuid from 'uuid/v4';
 
 import ProfileCard from './ProfileCard/ProfileCard';
 
+
 import "./Profiles.css";
 
 class Profiles extends Component {
@@ -15,12 +16,7 @@ class Profiles extends Component {
         }
     }
     componentDidMount() {
-        axios.get('http://127.0.0.1:5000/dashboard',
-            {
-                headers: {
-                    'Account-Id': 0
-                }
-            })
+        axios.get('/dashboard')
             .then(res => {
 
                 const profilesRes = res.data;
