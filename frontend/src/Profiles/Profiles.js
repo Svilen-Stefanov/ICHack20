@@ -13,11 +13,14 @@ class Profiles extends Component {
         super(props);
         this.state = {
             profilesLoaded: false,
-            profiles: []
+            profiles: [],
+            search: ""
         }
     }
     componentDidMount() {
-        console.log(queryString.parse(window.location.search))
+        this.setState({
+            search: queryString.parse(window.location.search)
+        });
 
         axios.get('/dashboard')
             .then(res => {
@@ -48,7 +51,7 @@ class Profiles extends Component {
             : profiles = <p>Loading Profiles...</p>
         return (
             <main className="Profiles-container">
-                <h1>Suggested Profiles</h1>
+                <h2>Search results for: {this.state.search.search}</h2>
                 {profiles}
             </main>
         );

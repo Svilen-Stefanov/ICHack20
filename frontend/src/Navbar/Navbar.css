@@ -15,6 +15,7 @@
 }
 
 .Navbar-search {
+    margin-left: 5px;
     border: none;
     font-size: 25px;
     border-radius: 10px;
@@ -34,3 +35,21 @@
 .Navbar-items li {
     margin-left: 50px;
 }
+
+.Navbar-drawer {
+    text-align: center;
+}
+
+.Navbar-drawer img {
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    margin-top: 10px;
+}
+
+.Navbar-drawer button{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
