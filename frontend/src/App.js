@@ -7,9 +7,27 @@ import Profiles from './Profiles/Profiles';
 
 import './App.css';
 
-
+const useStateWithLocalStorage = localStorageKey => {
+  const [value, setValue] = React.useState(
+    localStorage.getItem(localStorageKey) || ''
+  );
+  React.useEffect(() => {
+    localStorage.setItem(localStorageKey, value);
+  }, [value]);
+  return [value, setValue];
+};
 
 function App() {
+  /* Manage the account Id stored in the local session.
+   This allows the account Id to be retrieved and be set.
+   If no Id has been set it will be undefined. */
+  const [accountId, setAccountId] = useStateWithLocalStorage(
+    'accountId'
+  );
+
+  /* On entry set accountId to 0 */
+  setAccountId(0)
+
   return (
     <div className="App">
       <Navbar />

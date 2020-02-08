@@ -117,7 +117,7 @@ class UserTopicMap(db.Model):
 # The backend will aggregate what it thins is the best possible dashboard for the user.
 @app.route('/dashboard', methods=['GET'])
 def get_dashboard():
-    fake_return = DashboardView(FAKE_PROFILES.values())
+    fake_return = DashboardView([FAKE_PROFILES['0'], FAKE_PROFILES['1']])
     return jsonify(fake_return)
 
 
