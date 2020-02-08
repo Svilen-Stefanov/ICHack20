@@ -3,6 +3,8 @@ import axios from 'axios';
 import uuid from 'uuid/v4';
 
 import ProfileCard from './ProfileCard/ProfileCard';
+import queryString from "query-string";
+
 
 import "./Profiles.css";
 
@@ -15,12 +17,9 @@ class Profiles extends Component {
         }
     }
     componentDidMount() {
-        axios.get('http://127.0.0.1:5000/dashboard',
-            {
-                headers: {
-                    'Account-Id': 0
-                }
-            })
+        console.log(queryString.parse(window.location.search))
+
+        axios.get('/dashboard')
             .then(res => {
 
                 const profilesRes = res.data;

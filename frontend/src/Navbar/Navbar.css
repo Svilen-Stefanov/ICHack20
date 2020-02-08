@@ -14,6 +14,17 @@
     margin-left: 50px;
 }
 
+.Navbar-search {
+    border: none;
+    font-size: 25px;
+    border-radius: 10px;
+    width: 200px;
+}
+
+.Navbar-search:focus {
+    border: 1px solid black;
+}
+
 .Navbar-items {
     list-style: none;
     display: flex;
