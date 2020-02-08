@@ -1,0 +1,10 @@
+.Profiles-container {
+    padding-top: 100px;
+    width: 100%;
+    text-align: center;
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 200px;
+    background: grey;
+}
