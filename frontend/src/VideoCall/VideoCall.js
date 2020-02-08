@@ -1,17 +1,35 @@
 import React, { Component, useEffect } from 'react';
 import Webex from 'webex';
+import axios from 'axios';
+
 
 import { useStateWithLocalStorage } from '../utils'
 
 import "./VideoCall.css";
 
 function VideoCall() {
-
+    const [accountId, setAccountId] = useStateWithLocalStorage(
+        'accountId'
+    );
     const [webexId, setWebexId] = useStateWithLocalStorage(
         'webexId'
     );
 
+
     /* Execute this code once the component has loaded */
+    useEffect(() => {
+
+        /* Retrieve webex ID from backend and store in local storage */
+        if (accountId) {
+            axios.get('/profile/' + accountId)
+                .then(res => {
+                    setWebexId(res.data.brief.webex_id)
+                });
+        }
+        console.log(accountId);
+
+    }, [accountId])
+
     useEffect(() => {
         /* All of the above code was copied over from the Webex docs.
            Following the steps in: https://developer.webex.com/docs/sdks/browser */
@@ -20,6 +38,8 @@ function VideoCall() {
                 access_token: webexId
             }
         });
+
+        console.log(webexId);
 
         webex.meetings.register()
             .catch((err) => {
@@ -112,12 +132,20 @@ function VideoCall() {
                     console.error(error);
                 });
         });
-    }, [])
+    }, [webexId])
 
     return (
         <main className="Webex-container">
             <h1>Meetings Quick Start</h1>
             <p>This sample demonstrates how to start a meeting using Webex JS-SDK in the browser.</p>
+
+            <input
+                id="accountIdInput"
+                name="accountIdInput"
+                placeholder="Insert to change AccountId"
+                type="text"
+                value={accountId}
+                onChange={event => setAccountId(event.target.value)} />
 
             <form id="destination">
                 <input

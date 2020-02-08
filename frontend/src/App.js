@@ -20,9 +20,6 @@ function App() {
   const [accountId, setAccountId] = useStateWithLocalStorage(
     'accountId'
   );
-  const [webexId, setWebexId] = useStateWithLocalStorage(
-    'webexId'
-  );
 
   /* TODO: Currently Account ID is hardcoded to 0 */
   useEffect(() => {
@@ -32,12 +29,6 @@ function App() {
     axios.defaults.headers.common = {
       'Account-Id': accountId
     };
-
-    /* Retrieve webex ID from backend and store in local storage */
-    axios.get('/profile/' + accountId)
-      .then(res => {
-        setWebexId(res.data.brief.webex_id)
-      });
   }, [accountId]);
 
   return (
