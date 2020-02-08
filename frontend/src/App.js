@@ -4,6 +4,7 @@ import { Switch, Route } from 'react-router-dom'
 
 import Navbar from './Navbar/Navbar';
 import Profiles from './Profiles/Profiles';
+import Canvas from './Canvas/Canvas';
 
 import './App.css';
 
@@ -26,7 +27,7 @@ function App() {
   );
 
   /* On entry set accountId to 0 */
-  setAccountId(0)
+  // setAccountId(0)
 
   return (
     <div className="App">
@@ -35,6 +36,7 @@ function App() {
         <Route exact path='/' component={Profiles} />
         <Route path='/test1/:number' component={Profiles} />
         <Route path='/test2/:number' component={Profiles} />
+        <Route path='/canvas' component={Canvas} />
       </Switch>
 
     </div>

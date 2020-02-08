@@ -1,0 +1,24 @@
+.canvas-container {
+    padding-top: 100px;
+    width: 100%;
+    text-align: center;
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: row;
+}
+.canvas-left { 
+    display: flex;
+    flex-basis:50%;
+}
+
+.canvas-right {
+    display: flex;
+    flex-basis:50%;
+}
+
+.canvas-canvas {
+    width: 100%;
+    height: 100%;
+}
