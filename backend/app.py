@@ -6,17 +6,34 @@ from sqlalchemy.orm import backref, relationship, session
 from flask_cors import CORS
 from flask import jsonify
 from flask import request
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from datetime import date
 
 from model_classes import Profile, Skill, User, Topic, DashboardView
+
+
+def calculateAge(birthDate):
+    today = date.today()
+    age = today.year - birthDate.year
+    return age
 
 ########################################################################
 WEBEX_0 = "MjczYjg1ZDgtYzQxNy00ZTljLTlkN2ItYzE5NzhmOGU3ZTFmNjdiZjRhYzctNzcx_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
 WEBEX_1 = "M2E2N2E3ZmMtNDQwYy00MTkxLWFkOGEtY2EyNzRlZTRkNWJlYzYxYjJjZjgtZGQz_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
 
+web_handle_0 = "studybuddy@webex.bot"
+web_handle_1 = "studyclient@webex.bot"
+
+token_0 = 3.42
+token_1 = 2.42
+
+postgres_url = 'postgres://ffgllqemmjnrnm:c07be32cb7851a450198e43a4009a092a7c43c3678e0dc8d3ad3e309ead09669@ec2-54-246-89-234.eu-west-1.compute.amazonaws.com:5432/daahtl1du1mh0'
+
 ########################################################################
 FAKE_PROFILES = {
-    "0": Profile(0, f"{WEBEX_0}", "studybuddy@webex.bot", "Bobby Tables", "example.com", "Imperial College London", [Skill("Dancing", 3)], 27, 3.42),
-    "1": Profile(1, f"{WEBEX_1}", "studyclient@webex.bot", "Ms Bobby Tables", "exampl2e.com", "Imperial Collage London", [Skill("Maths", 1)], 28, 2.42)
+    "0": Profile(0, f"{WEBEX_0}", web_handle_0, "Bobby Tables", "example.com", "Imperial College London", [Skill("Dancing", 3)], 27, token_0),
+    "1": Profile(1, f"{WEBEX_1}", web_handle_1, "Ms Bobby Tables", "exampl2e.com", "Imperial Collage London", [Skill("Maths", 1)], 28, token_1)
 }
 
 
@@ -27,9 +44,16 @@ CORS(app)
 # -------------------------------------------------------------
 # Database connection:
 app.config[
-    'SQLALCHEMY_DATABASE_URI'] = 'postgres://ffgllqemmjnrnm:c07be32cb7851a450198e43a4009a092a7c43c3678e0dc8d3ad3e309ead09669@ec2-54-246-89-234.eu-west-1.compute.amazonaws.com:5432/daahtl1du1mh0'
+    'SQLALCHEMY_DATABASE_URI'] = postgres_url
 
 db = SQLAlchemy(app)
+
+# Connect to Database and create database session
+engine = create_engine(postgres_url)
+# Base.metadata.bind = engine
+
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
 
 
 # -------------------------------------------------------------
@@ -62,6 +86,7 @@ class DBTopic(db.Model):
     name = db.Column(db.String(30), nullable=False)
     subject_id = db.Column(db.Integer, db.ForeignKey('subjects.id'), primary_key=False, unique=True)
     description = db.Column(db.String(1000), nullable=True)
+    user_topic_map = relationship('DBUserTopicMap', back_populates=__tablename__, uselist=False)
 
 
 class DBFriend(db.Model):
@@ -80,13 +105,26 @@ class DBUserTopicMap(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=False, nullable=False)
     topic_id = db.Column(db.Integer, db.ForeignKey('topics.id'), unique=False, nullable=False)
     expertise = db.Column(db.Integer, nullable=True)
+    topics = relationship('DBTopic', back_populates=__tablename__, uselist=False)
 
 
 # -------------------------------------------------------------
 # Main dashboard view.
+@app.route('/dashboard', methods=['GET'])
+def get_dashboard():
+    all_users = DBUser.query.all()
+    list_users = []
+    for user in all_users:
+        skills = session.query(DBUserTopicMap.topics).filter(DBUserTopicMap.user_id==user.id).all()
+        user_name = user.first_name + " " + user.last_name
+        profile = Profile(user.id, WEBEX_0, web_handle_0, user_name, user.profile_pic, user.institution, skills, calculateAge(user.date_of_birth), token_0)
+        list_users.append(profile)
+    return jsonify(list_users)
+
+
 # The backend will aggregate what it thins is the best possible dashboard for the user.
 @app.route('/dashboard/<topic_id>', methods=['GET'])
-def get_dashboard(topic_id):
+def get_dashboard_with_topic(topic_id):
     skilled_users = DBUserTopicMap.query.filter_by(topic_id=topic_id).all()
     # Generate the data to be returned
     fake_return = DashboardView([FAKE_PROFILES['0'], FAKE_PROFILES['1']])
