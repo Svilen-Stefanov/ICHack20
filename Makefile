@@ -17,3 +17,7 @@ frontend:
 backend:
 	cd backend;\
 	python3 app.py
+
+.PHONY: vault
+vault:
+	./vault/vault.sh
