@@ -1,10 +1,19 @@
 import React, { Component } from 'react';
+import axios from 'axios';
+import uuid from 'uuid/v4';
 
 import ProfileCard from './ProfileCard/ProfileCard';
 
 import "./Profiles.css";
 
 class Profiles extends Component {
+    componentDidMount() {
+        axios.get('http://127.0.0.1:5000/dashboard')
+        .then(res => {
+            const profiles = res.data;
+            console.log(profiles);
+        });
+    }
     static defaultProps = {
         profiles: [
             {
@@ -45,7 +54,7 @@ class Profiles extends Component {
     
     render() {
         const profiles = this.props.profiles.map(profile => (
-            <ProfileCard data = {profile}/>
+            <ProfileCard key={uuid()} data = {profile}/>
         ));
         return (
             <main className="Profiles-container">

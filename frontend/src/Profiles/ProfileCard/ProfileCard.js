@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import uuid from 'uuid/v4';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 
@@ -8,7 +9,7 @@ class ProfileCard extends Component {
     render() {
         let { name, age, imgUrl, institution, skills } = this.props.data;
         const skillsList = this.props.data.skills.map (skill => (
-            <li><CheckBoxIcon fontSize={"small"}/> {skill.skill_name}: {skill.experience_level}</li>
+            <li key={uuid()}><CheckBoxIcon fontSize={"small"}/> {skill.skill_name}: {skill.experience_level}</li>
         ));
         return (
         <div className="ProfileCard-container">
