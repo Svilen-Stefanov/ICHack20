@@ -45,7 +45,7 @@ class DashboardView:
 @dataclass
 class EnhancedProfile:
     brief: Profile
-    description: str 
+    description: str
 
 
 ########################################################################
@@ -91,9 +91,8 @@ class Topic(db.Model):
     __tablename__ = 'topics'
     id = db.Column(db.Integer, primary_key=True, server_default=sqlalchemy.text(
         'topics_id_seq()'))
-    subject_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=False, unique=True)
-    subject = relationship('User', back_populates=__tablename__)
-
+    subject_id = db.Column(db.Integer, db.ForeignKey('subjects.id'), primary_key=False, unique=True)
+    
 
 class Friend(db.Model):
     __tablename__ = 'friends'
@@ -144,6 +143,22 @@ def get_profile(profile_id):
     fake_return = EnhancedProfile(FAKE_PROFILES[profile_id], "A very long description I cannot be bothered to type")
     return jsonify(fake_return)
 
+
+# Gets a list of all subjects
+@app.route('/subjects', methods=['GET'])
+def get_subjects():
+
+    # Get all subjects from db, impose upper limit on number of subjects returned
+    subjects_from_db = Subject.query.order_by(Subject.name).limit(100).all()
+    subjects_to_send = []
+    for subject in subjects_from_db:
+        sub = {
+            'title': subject.name,
+            'description': subject.description
+        }
+        subjects_to_send.append(sub)
+
+    return jsonify({'subjects': subjects_to_send})
 
 # Runs the app:
 if __name__ == '__main__':
