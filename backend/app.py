@@ -49,11 +49,11 @@ class EnhancedProfile:
     brief: Profile
     description: str
 
-
 ########################################################################
 WEBEX_0 = "MjczYjg1ZDgtYzQxNy00ZTljLTlkN2ItYzE5NzhmOGU3ZTFmNjdiZjRhYzctNzcx_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
 WEBEX_1 = "M2E2N2E3ZmMtNDQwYy00MTkxLWFkOGEtY2EyNzRlZTRkNWJlYzYxYjJjZjgtZGQz_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
 
+########################################################################
 FAKE_PROFILES = {
     "0": Profile(0, f"{WEBEX_0}", "studybuddy@webex.bot", "Bobby Tables", "example.com", "Imperial College London", [Skill("Dancing", 3)], 27, 3.42),
     "1": Profile(1, f"{WEBEX_1}", "studyclient@webex.bot", "Ms Bobby Tables", "exampl2e.com", "Imperial Collage London", [Skill("Maths", 1)], 28, 2.42)
@@ -90,14 +90,16 @@ class Subject(db.Model):
         'subjects_id_seq()'))
     name = db.Column(db.String(30), nullable=False)
     description = db.Column(db.String(1000), nullable=True)
+    topics = relationship('Topic')
 
 
 class Topic(db.Model):
     __tablename__ = 'topics'
     id = db.Column(db.Integer, primary_key=True, server_default=sqlalchemy.text(
         'topics_id_seq()'))
+    name = db.Column(db.String(30), nullable=False)
     subject_id = db.Column(db.Integer, db.ForeignKey('subjects.id'), primary_key=False, unique=True)
-    
+
 
 class Friend(db.Model):
     __tablename__ = 'friends'
@@ -158,9 +160,37 @@ def get_subjects():
     subjects_to_send = []
     for subject in subjects_from_db:
         sub = {
-            'title': subject.name,
+            'name': subject.name,
             'description': subject.description
         }
+        subjects_to_send.append(sub)
+
+    return jsonify({'subjects': subjects_to_send})
+
+
+# Gets a list of all subjects with their topics
+@app.route('/subjects_with_topics', methods=['GET'])
+def get_subjects_with_topics():
+
+    # Get all subjects from db, impose upper limit on number of subjects returned
+    subjects_from_db = Subject.query.order_by(Subject.name).limit(100).all()
+    subjects_to_send = []
+    for subject in subjects_from_db:
+
+        topics = []
+        for topic in subject.topics:
+            top = {
+                'name': topic.name,
+                'description': topic.description
+                }
+            topics.append(top)
+
+        sub = {
+            'name': subject.name,
+            'description': subject.description,
+            'topics': topics
+        }
+
         subjects_to_send.append(sub)
 
     return jsonify({'subjects': subjects_to_send})
