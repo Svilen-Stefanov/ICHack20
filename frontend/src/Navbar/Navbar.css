@@ -1,0 +1,24 @@
+.Navbar-container {
+    display: flex;
+    position: fixed;
+    width: 100%;
+    height: 80px;
+    background: rgba(0, 0, 0, 0.8);
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+}
+
+.Navbar-logo {
+    margin-left: 50px;
+}
+
+.Navbar-items {
+    list-style: none;
+    display: flex;
+    margin-right: 100px;
+}
+
+.Navbar-items li {
+    margin-left: 50px;
+}
