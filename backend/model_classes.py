@@ -15,6 +15,8 @@ class Skill:
 @dataclass
 class Profile:
     profile_id: int
+    webex_id: str
+    webex_handle: str
     name: str
     image_url: str
     institution: str
