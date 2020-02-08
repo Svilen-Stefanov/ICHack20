@@ -1,0 +1,17 @@
+.ProfileCard-container {
+    width: 400px;
+    height: 500px;
+    background: rgba(255, 255, 255, 0.8);
+    float: left;
+    margin-right: auto;
+    text-align: center;
+    transition: all 0.5s ease 0s;
+    margin: 20px 20px;
+    box-shadow: 10px 10px 11px -8px rgba(0,0,0,1);
+    cursor: pointer;
+}
+
+.ProfileCard-container img{
+    width: 50%;
+    height: 50%;
+}
