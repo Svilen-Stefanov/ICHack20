@@ -12,6 +12,7 @@ from dataclasses_json import dataclass_json, LetterCase
 
 from typing import List
 
+
 ########################################################################
 # Return dataclass Definitions
 @dataclass_json(letter_case=LetterCase.CAMEL)
@@ -19,6 +20,7 @@ from typing import List
 class Skill:
     skill_name: str
     experience_level: int
+
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
@@ -31,10 +33,12 @@ class Profile:
     age: str
     tokens: float
 
+
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
 class DashboardView:
     profiles: List[Profile]
+
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
@@ -42,8 +46,8 @@ class EnhancedProfile:
     brief: Profile
     description: str 
 
-########################################################################
 
+########################################################################
 FAKE_PROFILES = {
     "0": Profile(0, "Bobby Tables", "example.com", "Imperial College London", [Skill("Dancing", 3)], 27, 3.42),
     "1": Profile(1, "Ms Bobby Tables", "exampl2e.com", "Imperial Collage London", [Skill("Maths", 1)], 28, 2.42)
@@ -59,9 +63,9 @@ CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://ffgllqemmjnrnm:c07be32cb7851a450198e43a4009a092a7c43c3678e0dc8d3ad3e309ead09669@ec2-54-246-89-234.eu-west-1.compute.amazonaws.com:5432/daahtl1du1mh0'
 db = SQLAlchemy(app)
 
+
 # -------------------------------------------------------------
 # Database models:
-
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True, server_default=sqlalchemy.text(
@@ -107,8 +111,8 @@ class UserTopicMap(db.Model):
     topic_id = db.Column(db.Integer, db.ForeignKey('topics.id'), unique=False, nullable=False)
     expertise = db.Column(db.Integer, nullable=True)
 
-# -------------------------------------------------------------
 
+# -------------------------------------------------------------
 # Main dashboard view.
 # The backend will aggregate what it thins is the best possible dashboard for the user.
 @app.route('/dashboard', methods=['GET'])
