@@ -1,0 +1,11 @@
+.Webex-container {
+    padding-top: 100px;
+}
+
+.Webex-video-container {
+    display: flex;
+}
+
+.Webex-video-stream {
+    width:50%;
+}
