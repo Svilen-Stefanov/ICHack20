@@ -54,6 +54,7 @@ class Friend(db.Model):
     user_id2 = db.Column(db.Integer, db.ForeignKey('user.id'), unique=False, nullable=False)
     status = db.Column(db.Integer)
 
+
 class UserTopicMap(db.Model):
     __tablename__ = 'user_topic_map'
     id = db.Column(db.Integer, primary_key=True, server_default=sqlalchemy.text(
