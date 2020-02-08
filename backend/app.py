@@ -41,6 +41,10 @@ class EnhancedProfile:
 
 ########################################################################
 
+FAKE_PROFILES = {
+    "0": Profile(0, "Bobby Tables", "example.com", "Imperial College London", [Skill("Dancing", 3)], 27, 3.42),
+    "1": Profile(1, "Ms Bobby Tables", "exampl2e.com", "Imperial Collage London", [Skill("Maths", 1)], 28, 2.42)
+}
 
 
 app = Flask(__name__)
@@ -54,9 +58,16 @@ def test():
 # The backend will aggregate what it thins is the best possible dashboard for the user.
 @app.route('/dashboard', methods=['GET'])
 def get_dashboard():
-    fake_return = DashboardView([Profile(0, "Bobby Tables", "example.com", "Imperial College London", [Skill("Dancing", 3)], 27, 3.42)])
+    fake_return = DashboardView(FAKE_PROFILES.values())
     return jsonify(fake_return)
 
+
+# Get a specific profile with a give ID
+@app.route('/profile/<profile_id>', methods=['GET'])
+def get_profile(profile_id):
+    "TODO: Currently returns an error stacktrace if the profile_id could not be found"
+    fake_return = EnhancedProfile(FAKE_PROFILES[profile_id], "A very long description I cannot be bothered to type")
+    return jsonify(fake_return)
 
 
 # Runs the app:
