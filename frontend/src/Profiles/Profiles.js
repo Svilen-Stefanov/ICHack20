@@ -7,6 +7,13 @@ import ProfileCard from './ProfileCard/ProfileCard';
 import "./Profiles.css";
 
 class Profiles extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            profilesLoaded: false,
+            profiles: []
+        }
+    }
     componentDidMount() {
         axios.get('http://127.0.0.1:5000/dashboard',
             {
@@ -16,52 +23,30 @@ class Profiles extends Component {
             })
             .then(res => {
 
-                const profiles = res.data;
-                console.log(profiles);
+                const profilesRes = res.data;
+                this.setState({
+                    profiles: profilesRes.profiles,
+                    profilesLoaded: true
+                });
+                console.log(profilesRes);
             });
-    }
-    static defaultProps = {
-        profiles: [
-            {
-                name: "Eddy",
-                age: "20",
-                imgUrl: "https://images.unsplash.com/photo-1517070208541-6ddc4d3efbcb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80",
-                institution: "Imperial College London",
-                skills: [
-                    {
-                        skill_name: "Maths",
-                        experience_level: "Intermediate"
-                    },
-                    {
-                        skill_name: "Physics",
-                        experience_level: "Beginner"
-                    }
-                ]
-            },
-            {
-                name: "Eddy",
-                age: "20",
-                imgUrl: "https://images.unsplash.com/photo-1517070208541-6ddc4d3efbcb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80",
-                institution: "Imperial College London",
-                skills: [
-                    {
-                        skill_name: "Maths",
-                        experience_level: "Intermediate"
-                    },
-                    {
-                        skill_name: "Physics",
-                        experience_level: "Beginner"
-                    }
-                ]
-            }
-
-        ]
     }
 
     render() {
-        const profiles = this.props.profiles.map(profile => (
-            <ProfileCard key={uuid()} data={profile} />
-        ));
+        let profiles;
+        this.state.profilesLoaded ?
+            profiles = this.state.profiles.map(profile => {
+                return (
+                    <ProfileCard key={uuid()}
+                        name={profile.name}
+                        age={profile.age}
+                        imgUrl={profile.imgUrl}
+                        institution={profile.institution}
+                        skills={profile.skills}
+                    />
+                )
+            })
+            : profiles = <p>Loading Profiles...</p>
         return (
             <main className="Profiles-container">
                 <h1>Suggested Profiles</h1>
