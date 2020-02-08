@@ -6,6 +6,7 @@ from sqlalchemy import DateTime
 from sqlalchemy.orm import backref, relationship, session
 from flask_cors import CORS
 from flask import jsonify
+from flask import request
 
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json, LetterCase
@@ -117,6 +118,14 @@ class UserTopicMap(db.Model):
 # The backend will aggregate what it thins is the best possible dashboard for the user.
 @app.route('/dashboard', methods=['GET'])
 def get_dashboard():
+    # Retrieve the accountId specified by the user
+    try:
+        user_account_id = request.headers['Account-Id']
+        print(user_account_id)
+    except:
+        print("User did not specify an Account Id when performing the request!")
+
+    # Generate the data to be returned
     fake_return = DashboardView([FAKE_PROFILES['0'], FAKE_PROFILES['1']])
     return jsonify(fake_return)
 
@@ -124,6 +133,13 @@ def get_dashboard():
 # Get a specific profile with a give ID
 @app.route('/profile/<profile_id>', methods=['GET'])
 def get_profile(profile_id):
+    try:
+        user_account_id = request.headers['Account-Id']
+        print(user_account_id)
+    except:
+        print("User did not specify an Account Id when performing the request!")
+
+    # Generate the data to be returned
     "TODO: Currently returns an error stacktrace if the profile_id could not be found"
     fake_return = EnhancedProfile(FAKE_PROFILES[profile_id], "A very long description I cannot be bothered to type")
     return jsonify(fake_return)
