@@ -6,6 +6,7 @@ import ProfileCard from './ProfileCard/ProfileCard';
 import queryString from "query-string";
 
 
+
 import "./Profiles.css";
 
 class Profiles extends Component {
