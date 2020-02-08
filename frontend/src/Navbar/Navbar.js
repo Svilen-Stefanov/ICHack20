@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import SchoolIcon from '@material-ui/icons/School';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
 
 import './Navbar.css';
 
@@ -12,9 +13,9 @@ class Navbar extends Component {
                 </div>
 
                 <ul className="Navbar-items">
-                    <li>item 1</li>
+                    <li>Friends</li>
                     <li>item 2</li>
-                    <li>item 3</li>
+                    <li><AccountBoxIcon size={"inherit"}/></li>
                 </ul>
             </nav>
         );
