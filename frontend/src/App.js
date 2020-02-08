@@ -4,6 +4,7 @@ import { Switch, Route } from 'react-router-dom'
 
 import Navbar from './Navbar/Navbar';
 import Profiles from './Profiles/Profiles';
+import VideoCall from './VideoCall/VideoCall';
 
 import './App.css';
 
@@ -26,14 +27,14 @@ function App() {
   );
 
   /* On entry set accountId to 0 */
-  setAccountId(0)
+  // setAccountId(0)
 
   return (
     <div className="App">
       <Navbar />
       <Switch>
         <Route exact path='/' component={Profiles} />
-        <Route path='/test1/:number' component={Profiles} />
+        <Route path='/videocall' component={VideoCall} />
         <Route path='/test2/:number' component={Profiles} />
       </Switch>
 
