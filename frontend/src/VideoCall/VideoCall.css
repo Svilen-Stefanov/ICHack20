@@ -7,5 +7,9 @@
 }
 
 .Webex-video-stream {
-    width:50%;
+    width:100%;
+}
+
+.user-padding {
+    padding-top: 16px;
 }
