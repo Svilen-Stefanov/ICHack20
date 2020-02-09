@@ -1,0 +1,6 @@
+[submodule "ICHack20-backend"]
+	path = ICHack20-backend
+	url = git@github.com:Svilen-Stefanov/ICHack20-backend.git
+[submodule "ICHack20-frontend"]
+	path = ICHack20-frontend
+	url = git@github.com:Svilen-Stefanov/ICHack20-frontend.git
