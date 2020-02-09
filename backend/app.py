@@ -269,6 +269,7 @@ def knowledge_graph():
         'friends': 
         [
             {
+                'id': friend.id,
                 'first': friend.first_name,  
                 'last': friend.last_name,
                 'subject': subject.name
