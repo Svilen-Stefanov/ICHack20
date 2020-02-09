@@ -5,6 +5,8 @@ import queryString from "query-string";
 
 import { useStateWithLocalStorage } from '../utils'
 
+import JSONBigInt from 'json-bigint';
+
 import "./VideoCall.css";
 
 // There's a few different events that'll let us know we should initialize
@@ -174,11 +176,11 @@ function VideoCall() {
 
         /* Retrieve webex ID from backend and store in local storage */
         if (accountId) {
-            axios.get('/profile/' + accountId)
+            axios.get('/profile/' + accountId, { transformResponse: [data => data] })
                 .then(res => {
-                    console.log(res);
+                    console.log(JSON.parse(res.data));
 
-                    setWebexId(res.data.webex_id)
+                    setWebexId(JSON.parse(res.data).webex_id)
                 });
         }
         console.log(accountId);
@@ -216,9 +218,9 @@ function VideoCall() {
         if (targetAccountId) {
             console.log("TARGET ID: " + targetAccountId);
 
-            axios.get('/profile/' + targetAccountId)
+            axios.get('/profile/' + targetAccountId, { transformResponse: [data => data] })
                 .then(res => {
-                    setTargetUser(res.data)
+                    setTargetUser(JSONBigInt.parse((res.data)))
                 }).catch(err => {
                     console.err(err)
                 });
