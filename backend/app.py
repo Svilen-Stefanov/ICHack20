@@ -139,7 +139,7 @@ def get_dashboard():
     except:
         print("User did not specify an Account Id when performing the request!")
 
-    all_users = DBUser.query.all()
+    all_users = DBUser.query.order_by(sqlalchemy.desc(DBUser.money)).all()
     all_users = all_users[:15]
     list_users = []
     for user in all_users:
