@@ -6,6 +6,7 @@ import { Switch, Route } from 'react-router-dom'
 import Navbar from './Navbar/Navbar';
 import Login from './Login/Login';
 import Profiles from './Profiles/Profiles';
+import Canvas from './Canvas/Canvas';
 import VideoCall from './VideoCall/VideoCall';
 
 import { useStateWithLocalStorage } from './utils'
@@ -40,6 +41,7 @@ function App() {
         <Route path='/videocall' component={VideoCall} />
         <Route path='/test2/:number' component={Profiles} />
         <Route path='/login' component={Login} />
+        <Route path='/canvas' component={Canvas} />
       </Switch>
 
     </div>

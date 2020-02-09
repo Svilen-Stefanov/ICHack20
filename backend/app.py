@@ -15,6 +15,8 @@ from typing import List
 
 from model_classes import Profile, Skill, User, Topic, DashboardView
 
+import socketio
+import eventlet
 
 def calculateAge(birthDate):
     today = date.today()
@@ -71,9 +73,17 @@ FAKE_PROFILES = {
 }
 
 
+
+sio = socketio.Server(async_mode='threading', cors_allowed_origins=['http://localhost:3000'])
 app = Flask(__name__)
+app.config['CORS_SUPPORTS_CREDENTIALS'] = True
+
+app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
+
+
+
 # Allow Cross-origin policy on all endpoints
-CORS(app)
+CORS(app, resources={r"/*": {"Access-Control-Allow-Origin": "*"}})
 
 # -------------------------------------------------------------
 # Database connection:
@@ -88,7 +98,6 @@ engine = create_engine(postgres_url)
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
-
 
 # -------------------------------------------------------------
 # Database models:
@@ -238,6 +247,15 @@ def get_subjects_with_topics():
 
     return jsonify({'subjects': subjects_to_send})
 
+@sio.event
+def connect(sid, environ):
+    sio.enter_room(sid, 'painters')
+
+@sio.event
+def paint(sid, data):
+    sio.emit('paint', data, room='painters', skip_sid=sid)
+
 # Runs the app:
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(threaded=True, debug=True)
+
