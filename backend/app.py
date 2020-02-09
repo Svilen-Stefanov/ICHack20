@@ -18,6 +18,7 @@ import sys,os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../vault/py_tm_vault_client_release_0.1.0_team5/py_tm_vault_client"))
 # from tmvault import TMVaultClient
 
+<<<<<<< HEAD
 # from client import TMVaultClient
 #from tmvault import TMVaultClient
 #client = TMVaultClient('../vault/py_tm_vault_client_release_0.1.0_team5/data/vault-config.json')
@@ -26,6 +27,10 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../vault/py_tm_vault_cl
 #print(accounts_for_person_a[0].name)
 
 import socketio
+=======
+# accounts_for_person_a = client.accounts.list_accounts_for_customer('5320319443367695238')
+# print(accounts_for_person_a[0].name)
+>>>>>>> fd7c678244435585fbe15aa72e2b88db47baeb45
 
 
 def calculateAge(birthDate):
@@ -145,7 +150,7 @@ def get_dashboard():
     except:
         print("User did not specify an Account Id when performing the request!")
 
-    all_users = DBUser.query.all()
+    all_users = DBUser.query.order_by(sqlalchemy.desc(DBUser.money)).all()
     all_users = all_users[:15]
     list_users = []
     for user in all_users:
@@ -173,9 +178,37 @@ def get_dashboard():
     return jsonify(list_users)
 
 
+# Create a friendship
+@app.route('/dashboard', methods=['PUT'])
+def set_friendship():
+    data = request.get_json()
+    user_id0 = None
+    try:
+        user_id0 = data['user_id']
+    except:
+        print("Received data with invalid format!")
+
+    user_id1 = None
+    try:
+        user_id1 = request.headers['Account-Id']
+    except:
+        print("User did not specify an Account Id when performing the request!")
+
+    print(user_id0)
+    print(user_id1)
+    if user_id0 is not None and user_id1 is not None:
+        friendship = DBFriend(user_id1=user_id0, user_id2=user_id1, status=1)
+        session.add(friendship)
+        session.commit()
+    else:
+        return make_response("401")
+    return make_response("200")
+
+
 # The backend will aggregate what it thins is the best possible dashboard for the user.
-@app.route('/dashboard/<topic_id>', methods=['GET'])
-def get_dashboard_with_topic(topic_id):
+@app.route('/dashboard/<topic>', methods=['GET'])
+def get_dashboard_with_topic(topic):
+    topic_id = session.query(DBTopic.id).filter_by(name=topic).first()
     user_id0 = 0
     try:
         user_id0 = request.headers['Account-Id']
@@ -264,7 +297,7 @@ def get_subjects():
 
 
 # Gets a list of all subjects with their topics
-@app.route('/subjects_with_topics', methods=['PUT', 'POST'])
+@app.route('/subjects_with_topics', methods=['GET'])
 def get_subjects_with_topics():
 
     # Get all subjects from db, impose upper limit on number of subjects returned
@@ -330,7 +363,7 @@ def knowledge_graph():
         });
 
 # Creates a new vault account
-@app.route('/send-money', methods=['GET'])
+@app.route('/send-money', methods=['PUT', 'POST'])
 def send_money():
 
     user_account_id = None

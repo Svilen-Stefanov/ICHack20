@@ -44,6 +44,7 @@ class Profiles extends Component {
                         institution={profile.institution}
                         skills={profile.skills}
                         targetAccountId={profile.profile_id}
+                        status={profile.status}
                     />
                 )
             })
