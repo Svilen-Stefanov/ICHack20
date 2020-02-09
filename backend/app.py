@@ -10,8 +10,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from datetime import date
 
-import json
-
 from model_classes import Profile, Skill, User, Topic, DashboardView
 
 import socketio
@@ -123,6 +121,7 @@ def get_dashboard():
     list_users = []
     for user in all_users:
         skills = session.query(DBTopic.name, DBUserTopicMap.expertise).join(DBUserTopicMap).filter(DBUserTopicMap.user_id==user.id).all()
+        skills = [Skill(skill[0], skill[1]) for skill in skills]
         user_name = user.first_name + " " + user.last_name
         profile = Profile(user.id, WEBEX_0, web_handle_0, user_name, user.profile_pic, user.institution, skills, calculateAge(user.date_of_birth), token_0)
         profile_json = {
@@ -149,6 +148,7 @@ def get_dashboard_with_topic(topic_id):
         user = session.query(DBUser).join(DBUserTopicMap).filter(DBUser.id == u.user_id).first()
         if user is not None:
             skills = session.query(DBTopic.name, DBUserTopicMap.expertise).join(DBUserTopicMap).filter(DBUserTopicMap.user_id == u.id).all()
+            skills = [Skill(skill[0], skill[1]) for skill in skills]
             user_name = user.first_name + " " + user.last_name
             profile = Profile(user.id, WEBEX_0, web_handle_0, user_name, user.profile_pic, user.institution, skills,
                               calculateAge(user.date_of_birth), token_0)
