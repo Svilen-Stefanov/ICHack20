@@ -18,8 +18,8 @@ import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../vault/py_tm_vault_client_release_0.1.0_team5/py_tm_vault_client"))
 
 # from client import TMVaultClient
-from tmvault import TMVaultClient
-client = TMVaultClient('../vault/py_tm_vault_client_release_0.1.0_team5/data/vault-config.json')
+#from tmvault import TMVaultClient
+#client = TMVaultClient('../vault/py_tm_vault_client_release_0.1.0_team5/data/vault-config.json')
 
 #accounts_for_person_a = client.accounts.list_accounts_for_customer('5320319443367695238')
 #print(accounts_for_person_a[0].name)

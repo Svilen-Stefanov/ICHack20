@@ -40,16 +40,17 @@ class ProfileCard extends Component {
         if (imgUrl === "") {
             imgUrl = this.props.defaultImgUrl;
         }
-        const skillsList = this.props.skills.map(skill => (
+        const skillsList = this.props.skills.slice(0, 2).map(skill => (
             <li key={uuid()}><CheckBoxIcon fontSize={"small"} /> {skill.skill_name}: {"*".repeat(skill.experience_level)}</li>
         ));
         return (
             <div className="ProfileCard-container">
-                <h2>{name} ({age})</h2>
+                <h2 className="Profile-name">{name} ({age})</h2>
                 <img src={imgUrl} />
-                <h2>{institution}</h2>
-                <h2>skills  </h2>
-                <ul>{skillsList}</ul>
+                <h2 className="Profile-institution">{institution}</h2>
+                <div className="Profile-skills">
+                    <ul>{skillsList}</ul>
+                </div>
                 <div className="ProfileCard-footer">
                     <ConnectButton targetAccountId={targetAccountId} />
                     <ProfileButton targetAccountId={targetAccountId} />
