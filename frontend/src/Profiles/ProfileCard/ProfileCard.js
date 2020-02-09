@@ -33,7 +33,7 @@ class ProfileCard extends Component {
             imgUrl = this.props.defaultImgUrl;
         }
         const skillsList = this.props.skills.map(skill => (
-            <li key={uuid()}><CheckBoxIcon fontSize={"small"} /> {skill.skill_name}: {skill.experience_level}</li>
+            <li key={uuid()}><CheckBoxIcon fontSize={"small"} /> {skill.skill_name}: {'*'.repeat(skill.experience_level)}</li>
         ));
         const nextPath = (path) => {
             this.props.history.push(path);
