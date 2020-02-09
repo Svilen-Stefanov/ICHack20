@@ -19,6 +19,20 @@
     box-shadow: 10px 13px 11px -8px rgba(0,0,0,1);
 }
 
+.Profile-padded-icon {
+    padding-top: 6px !important;
+}
+
+.Profile-money {
+    padding-top: 14px !important;
+    padding-left: 12px !important;
+}
+
+.Profile-money h4 {
+    grid-column-start: 1;
+    grid-row-start: 1;
+}
+
 .ProfileCard-container h2{
     padding-top: 10px;
     grid-column-start: 2;

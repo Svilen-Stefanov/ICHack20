@@ -11,6 +11,8 @@ import queryString from "query-string";
 import axios from 'axios';
 import JSONBigInt from 'json-bigint';
 
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+
 import "./ProfileCard.css";
 
 /* Route to the Videocall tab specifying a target user */
@@ -68,7 +70,7 @@ class ProfileCard extends Component {
     }
 
     render() {
-        let { name, age, imgUrl, institution, status, targetAccountId } = this.props;
+        let { name, age, imgUrl, institution, money, status, targetAccountId } = this.props;
 
         if (imgUrl === "") {
             imgUrl = this.props.defaultImgUrl;
@@ -89,6 +91,7 @@ class ProfileCard extends Component {
 
             <Fade bottom duration={500}>
                 <div className="ProfileCard-container">
+                    <div className="Profile-money"><h4>${money}</h4></div>
                     <h2 className="Profile-name">{name} ({age})</h2>
                     <img src={imgUrl} />
                     <h2 className="Profile-institution">{institution}</h2>

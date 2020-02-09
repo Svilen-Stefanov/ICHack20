@@ -37,11 +37,6 @@ user1_id = 8360390402314484225
 
 # vault_client = TMVaultClient('../vault/py_tm_vault_client_release_0.1.0_team5/data/vault-config.json')
 
-FAKE_PROFILES = {
-    "0": Profile(user0_id, f"{WEBEX_0}", web_handle_0, "Bobby Tables", "example.com", "Imperial College London", [Skill("Dancing", 3)], 27, token_0),
-    "1": Profile(user1_id, f"{WEBEX_1}", web_handle_1, "Ms Bobby Tables", "exampl2e.com", "Imperial Collage London", [Skill("Maths", 1)], 28, token_1)
-}
-
 #FAKE_ACCOUNTS = {
 #   "0" : vault_client.accounts.create_account(product_id="", stakeholder_customer_ids=[str(user0_id)])
 #}
@@ -152,7 +147,7 @@ def get_dashboard():
         skills = session.query(DBTopic.name, DBUserTopicMap.expertise).join(DBUserTopicMap).filter(DBUserTopicMap.user_id==user.id).all()
         skills = [Skill(skill[0][0] + skill[0][1:].lower(), skill[1]) for skill in skills]
         user_name = user.first_name + " " + user.last_name
-        profile = Profile(profile_id=user.id, webex_id=WEBEX_0, webex_handle=web_handle_0, name=user_name, image_url=user.profile_pic, institution=user.institution, skills=skills, age=calculateAge(user.date_of_birth), tokens=token_0)
+        profile = Profile(profile_id=user.id, webex_id=WEBEX_0, webex_handle=web_handle_0, name=user_name, image_url=user.profile_pic, institution=user.institution, skills=skills, age=calculateAge(user.date_of_birth), tokens=token_0, money=user.money)
         print(user_id0, status)
         profile_json = {
             "profile_id": profile.profile_id,
@@ -165,6 +160,7 @@ def get_dashboard():
             "age": profile.age,
             "token": profile.tokens,
             "status": status,
+            "money": profile.money
         }
         list_users.append(profile_json)
     return jsonify(list_users)

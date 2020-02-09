@@ -23,6 +23,7 @@ class Profile:
     skills: List[Skill]
     age: str
     tokens: float
+    money: int
 
 
 

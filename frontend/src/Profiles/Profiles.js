@@ -51,6 +51,7 @@ class Profiles extends Component {
                         skills={profile.skills}
                         targetAccountId={profile.profile_id}
                         status={profile.status}
+                        money={profile.money}
                     />
                 )
             })

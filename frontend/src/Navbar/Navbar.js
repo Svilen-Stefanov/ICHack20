@@ -60,6 +60,10 @@ class Navbar extends Component {
                     this.setState({
                         showFilter: false
                     });
+                } else {
+                    this.setState({
+                        showFilter: true
+                    });
                 }
             }
         }
