@@ -85,7 +85,7 @@ class Canvas extends Component {
             this.setState({ show: true });
         }, 1000);
 
-        this.socket = io.connect('localhost:5000');
+        this.socket = io.connect('https://magical-painting-server.herokuapp.com/');
         this.socket.on('paint', (data) => {
             const line = data;
             line.forEach((position) => {

@@ -83,7 +83,7 @@ app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
 
 
 # Allow Cross-origin policy on all endpoints
-CORS(app, resources={r"/*": {"Access-Control-Allow-Origin": "*"}})
+CORS(app)
 
 # -------------------------------------------------------------
 # Database connection:
@@ -249,30 +249,14 @@ def get_subjects_with_topics():
 
 # Gets a graph of relationships
 @app.route('/knowledge_graph', methods=['GET'])
-def get_subjects_with_topics():
-
+def knowledge_graph():
+    try:
+        user_account_id = request.headers['Account-Id']
+        print(user_account_id)
+    except:
+        print("User did not specify an Account Id when performing the request!")
     # Get all subjects from db, impose upper limit on number of subjects returned
-    subjects_from_db = DBSubject.query.order_by(Subject.name).limit(100).all()
-    subjects_to_send = []
-    for subject in subjects_from_db:
-
-        topics = []
-        for topic in subject.topics:
-            top = {
-                'name': topic.name,
-                'description': topic.description
-                }
-            topics.append(top)
-
-        sub = {
-            'name': subject.name,
-            'description': subject.description,
-            'topics': topics
-        }
-
-        subjects_to_send.append(sub)
-
-    return jsonify({'subjects': subjects_to_send})
+    return True
 
 @sio.event
 def connect(sid, environ):

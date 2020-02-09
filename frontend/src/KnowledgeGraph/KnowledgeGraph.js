@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 
 import Graph from 'vis-react';
 import './KnowledgeGraph.css';
+import axios from 'axios';
 
 
 
@@ -33,6 +34,13 @@ class KnowledgeGraph extends Component {
         edges: {
             color: '#000000'
         }
+    }
+    componentDidMount() {
+        console.log('hi')
+        axios.get('/knowledge_graph')
+        .then(res => {
+            console.log(res);
+        });
     }
     render() {
         return (
