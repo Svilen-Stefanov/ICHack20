@@ -18,14 +18,8 @@ import sys,os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../vault/py_tm_vault_client_release_0.1.0_team5/py_tm_vault_client"))
 # from tmvault import TMVaultClient
 
-# from client import TMVaultClient
-#from tmvault import TMVaultClient
-#client = TMVaultClient('../vault/py_tm_vault_client_release_0.1.0_team5/data/vault-config.json')
-
-#accounts_for_person_a = client.accounts.list_accounts_for_customer('5320319443367695238')
-#print(accounts_for_person_a[0].name)
-
-import socketio
+# accounts_for_person_a = client.accounts.list_accounts_for_customer('5320319443367695238')
+# print(accounts_for_person_a[0].name)
 
 
 def calculateAge(birthDate):
@@ -264,7 +258,7 @@ def get_subjects():
 
 
 # Gets a list of all subjects with their topics
-@app.route('/subjects_with_topics', methods=['PUT', 'POST'])
+@app.route('/subjects_with_topics', methods=['GET'])
 def get_subjects_with_topics():
 
     # Get all subjects from db, impose upper limit on number of subjects returned
@@ -330,7 +324,7 @@ def knowledge_graph():
         });
 
 # Creates a new vault account
-@app.route('/send-money', methods=['GET'])
+@app.route('/send-money', methods=['PUT', 'POST'])
 def send_money():
 
     user_account_id = None
