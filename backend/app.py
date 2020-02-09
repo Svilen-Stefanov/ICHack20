@@ -142,9 +142,20 @@ def get_dashboard():
     all_users = all_users[:15]
     list_users = []
     for user in all_users:
-        status = session.query(DBFriend.status).filter(
-            (DBFriend.user_id1 == user_id0 or DBFriend.user_id2 == user_id0) and (DBFriend.user_id1 == user.id and DBFriend.user_id2 == user.id)).first()
-        status = status[0]
+        # status = session.query(DBFriend.status).filter(
+            # (DBFriend.user_id1 == user_id0 or DBFriend.user_id2 == user_id0) and (DBFriend.user_id1 == user.id or DBFriend.user_id2 == user.id)).all()
+        user_id = user.id
+        status_left = session.query(DBFriend.status).filter_by(user_id1=user_id0, user_id2=user_id).all()
+        status_right = session.query(DBFriend.status).filter_by(user_id1=user_id, user_id2=user_id0).all()
+        status = []
+        status.extend(status_left)
+        status.extend(status_right)
+        if status == []:
+            status = 0
+        else:
+            status = status[0][0]
+
+        print('num', status)
         skills = session.query(DBTopic.name, DBUserTopicMap.expertise).join(DBUserTopicMap).filter(DBUserTopicMap.user_id==user.id).all()
         skills = [Skill(skill[0][0] + skill[0][1:].lower(), skill[1]) for skill in skills]
         user_name = user.first_name + " " + user.last_name
@@ -185,8 +196,20 @@ def set_friendship():
     print(user_id0)
     print(user_id1)
     if user_id0 is not None and user_id1 is not None:
-        friendship = DBFriend('', user_id0, user_id1, 1)
-        session.add(friendship)
+        status_left = session.query(DBFriend.status).filter_by(user_id1=user_id0, user_id2=user_id1).all()
+        status_right = session.query(DBFriend.status).filter_by(user_id1=user_id1, user_id2=user_id0).all()
+        status = []
+        status.extend(status_left)
+        status.extend(status_right)
+        if status == []:
+            friendship = DBFriend(user_id1=user_id0, user_id2=user_id1, status=1)
+            session.add(friendship)
+        else:
+            session.query(DBFriend).filter(
+                    (DBFriend.user_id1 == user_id0 and DBFriend.user_id2 == user_id1)
+                    or (DBFriend.user_id1 == user_id1 and DBFriend.user_id2 == user_id0)).update({'status': 1})
+        session.commit()
+    return make_response('200')
 
 
 # The backend will aggregate what it thins is the best possible dashboard for the user.
