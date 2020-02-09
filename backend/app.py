@@ -371,6 +371,7 @@ def send_money():
     money_amount = 0
 
     data = request.get_json()
+    print(data)
 
     print(data)
     try:
