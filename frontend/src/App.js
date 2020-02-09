@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Switch, Route } from 'react-router-dom'
 
 import Navbar from './Navbar/Navbar';
+import Login from './Login/Login';
 import Profiles from './Profiles/Profiles';
 import VideoCall from './VideoCall/VideoCall';
 
@@ -38,6 +39,7 @@ function App() {
         <Route exact path='/' component={Profiles} />
         <Route path='/videocall' component={VideoCall} />
         <Route path='/test2/:number' component={Profiles} />
+        <Route path='/login' component={Login} />
       </Switch>
 
     </div>

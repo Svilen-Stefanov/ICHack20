@@ -3,6 +3,8 @@ import axios from 'axios';
 import uuid from 'uuid/v4';
 
 import ProfileCard from './ProfileCard/ProfileCard';
+import queryString from "query-string";
+
 
 
 import "./Profiles.css";
@@ -12,10 +14,15 @@ class Profiles extends Component {
         super(props);
         this.state = {
             profilesLoaded: false,
-            profiles: []
+            profiles: [],
+            search: ""
         }
     }
     componentDidMount() {
+        this.setState({
+            search: queryString.parse(window.location.search)
+        });
+
         axios.get('/dashboard')
             .then(res => {
 
@@ -45,7 +52,7 @@ class Profiles extends Component {
             : profiles = <p>Loading Profiles...</p>
         return (
             <main className="Profiles-container">
-                <h1>Suggested Profiles</h1>
+                <h2>Search results for: {this.state.search.search}</h2>
                 {profiles}
             </main>
         );
