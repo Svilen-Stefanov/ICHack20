@@ -85,6 +85,7 @@ class DBUser(db.Model):
     institution = db.Column(db.String(30), nullable=True)
     description = db.Column(db.String(2000), nullable=True)
     profile_pic = db.Column(db.String(500), nullable=True)
+    money = db.Column(db.Integer, nullable=False)
 
 
 class DBSubject(db.Model):
