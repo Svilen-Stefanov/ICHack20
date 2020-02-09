@@ -9,6 +9,9 @@ from flask import request
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from datetime import date
+from dataclasses import dataclass
+from dataclasses_json import dataclass_json, LetterCase
+from typing import List
 
 from model_classes import Profile, Skill, User, Topic, DashboardView
 
@@ -56,8 +59,8 @@ class EnhancedProfile:
 postgres_url = 'postgres://ffgllqemmjnrnm:c07be32cb7851a450198e43a4009a092a7c43c3678e0dc8d3ad3e309ead09669@ec2-54-246-89-234.eu-west-1.compute.amazonaws.com:5432/daahtl1du1mh0'
 
 ########################################################################
-WEBEX_0 = "MjczYjg1ZDgtYzQxNy00ZTljLTlkN2ItYzE5NzhmOGU3ZTFmNjdiZjRhYzctNzcx_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
-WEBEX_1 = "M2E2N2E3ZmMtNDQwYy00MTkxLWFkOGEtY2EyNzRlZTRkNWJlYzYxYjJjZjgtZGQz_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
+token_0 = "MjczYjg1ZDgtYzQxNy00ZTljLTlkN2ItYzE5NzhmOGU3ZTFmNjdiZjRhYzctNzcx_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
+token_1 = "M2E2N2E3ZmMtNDQwYy00MTkxLWFkOGEtY2EyNzRlZTRkNWJlYzYxYjJjZjgtZGQz_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
 
 FAKE_PROFILES = {
     "0": Profile(0, f"{WEBEX_0}", web_handle_0, "Bobby Tables", "example.com", "Imperial College London", [Skill("Dancing", 3)], 27, token_0),

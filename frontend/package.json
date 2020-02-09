@@ -15,13 +15,8 @@
     "react-dom": "^16.12.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.3.1",
-<<<<<<< HEAD
-    "uuid": "^3.4.0",
-    "webex": "^1.80.109"
-=======
     "webex": "^1.80.109",
     "uuid": "^3.4.0"
->>>>>>> master
   },
   "scripts": {
     "start": "react-scripts start",
