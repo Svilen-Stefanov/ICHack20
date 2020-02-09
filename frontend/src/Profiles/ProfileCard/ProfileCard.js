@@ -35,7 +35,7 @@ const FriendButton = (({ targetName, targetId, friendshipSetter }) => (
 
             axios.put('/dashboard', { user_id: targetId })
                 .then(res => {
-                    friendshipSetter(true)
+                    friendshipSetter(1)
                 }).catch(err => {
                     console.err(err)
                 });
@@ -80,12 +80,9 @@ class ProfileCard extends Component {
         ));
 
         const friendshipSetter = (state) => {
-            status = state
             this.setState({
                 status: state
             });
-            console.log("Status updated!");
-
         }
         return (
 
@@ -99,7 +96,7 @@ class ProfileCard extends Component {
                         <ul>{skillsList}</ul>
                     </div>
                     <div className="ProfileCard-footer">
-                        {this.state.status == 0 ? <ConnectButton targetAccountId={targetAccountId} /> : <FriendButton targetName={name} targetId={targetAccountId} friendshipSetter={friendshipSetter} />}
+                        {this.state.status ? <ConnectButton targetAccountId={targetAccountId} /> : <FriendButton targetName={name} targetId={targetAccountId} friendshipSetter={friendshipSetter} />}
                         <ProfileButton targetAccountId={targetAccountId} />
                     </div>
                 </div >
