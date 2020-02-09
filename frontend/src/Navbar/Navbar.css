@@ -47,7 +47,11 @@
 }
 
 .Navbar-items li {
-    margin-left: 50px;
+    margin-left: 100px;
+}
+
+.Navbar-items li:hover {
+    transform: scale(1.1);
 }
 
 .Navbar-drawer {

@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+
 import SchoolIcon from '@material-ui/icons/School';
-import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import SettingsIcon from '@material-ui/icons/Settings';
 import SearchIcon from '@material-ui/icons/Search';
+import VideoCallIcon from '@material-ui/icons/VideoCall';
+
 import Drawer from '@material-ui/core/Drawer';
 import queryString from "query-string";
 import { Link } from 'react-router-dom'
@@ -20,6 +23,7 @@ class Navbar extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleClick = this.handleClick.bind(this);
+        this.handleVideoCall = this.handleVideoCall.bind(this);
         console.log(this.props.location);
     }
 
@@ -50,6 +54,10 @@ class Navbar extends Component {
         });
     }
 
+    handleVideoCall() {
+
+    }
+
     render() {
         const { showNav } = this.state;
 
@@ -76,7 +84,8 @@ class Navbar extends Component {
                         </form>
                     </div>
                     <ul className="Navbar-items">
-                        <li><AccountBoxIcon size={"inherit"} onClick={this.handleClick} /></li>
+                        <li><VideoCallIcon fontSize={"large"} onClick={this.handleVideoCall} /></li>
+                        <li><SettingsIcon fontSize={"large"} onClick={this.handleClick} /></li>
                     </ul>
                     <Drawer anchor={"right"} open={this.state.sideDrawerOpen} onClose={this.handleClick}>
                         <div className="Navbar-drawer">

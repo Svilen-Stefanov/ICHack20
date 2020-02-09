@@ -15,16 +15,14 @@ from model_classes import Profile, Skill, User, Topic, DashboardView
 # Importing vault:
 import sys, os
 
-sys.path.append(os.path.join(os.path.dirname(__file__), "../vault/py_tm_vault_client_release_0.1.0_team5/py_tm_vault_client"))
+#sys.path.append(os.path.join(os.path.dirname(__file__), "../vault/py_tm_vault_client_release_0.1.0_team5/py_tm_vault_client"))
 
 # from client import TMVaultClient
+#from tmvault import TMVaultClient
+#client = TMVaultClient('../vault/py_tm_vault_client_release_0.1.0_team5/data/vault-config.json')
 
-from tmvault import TMVaultClient
-
-client = TMVaultClient('../vault/py_tm_vault_client_release_0.1.0_team5/data/vault-config.json')
-
-accounts_for_person_a = client.accounts.list_accounts_for_customer('5320319443367695238')
-print(accounts_for_person_a[0].name)
+#accounts_for_person_a = client.accounts.list_accounts_for_customer('5320319443367695238')
+#print(accounts_for_person_a[0].name)
 
 import socketio
 
@@ -281,23 +279,20 @@ def paint(sid, data):
     sio.emit('paint', data, room='painters', skip_sid=sid)
 
 
-<<<<<<< Updated upstream
-=======
 # Vault integration:
 
 # Creates a new vault account
-@app.route('/create_account/<id>', methods=['GET'])
-def create_vault_account(id):
-    return jsonify({'customer': vault_client.customers.create_customer(customer_id=id)})
+#@app.route('/create_account/<id>', methods=['GET'])
+#def create_vault_account(id):
+#    return jsonify({'customer': vault_client.customers.create_customer(customer_id=id)})
 
 
 # Creates a new vault account
-@app.route('/create_customer_account/<id>', methods=['GET'])
-def create_vault_account(id):
-    return jsonify({'account': vault_client.accounts.create_account(account_id=id)})
+#@app.route('/create_customer_account/<id>', methods=['GET'])
+#def create_vault_account(id):
+#    return jsonify({'account': vault_client.accounts.create_account(account_id=id)})
 
 
->>>>>>> Stashed changes
 # Runs the app:
 if __name__ == '__main__':
     app.run(threaded=True, debug=True)
