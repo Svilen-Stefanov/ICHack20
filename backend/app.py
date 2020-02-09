@@ -12,8 +12,6 @@ from datetime import date
 
 from model_classes import Profile, Skill, User, Topic, DashboardView
 
-import socketio
-
 
 def calculateAge(birthDate):
     today = date.today()
@@ -38,12 +36,7 @@ FAKE_PROFILES = {
 }
 
 
-sio = socketio.Server(async_mode='threading', cors_allowed_origins=['http://localhost:3000'])
 app = Flask(__name__)
-app.config['CORS_SUPPORTS_CREDENTIALS'] = True
-
-app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
-
 
 # Allow Cross-origin policy on all endpoints
 CORS(app)
@@ -254,19 +247,9 @@ def knowledge_graph():
     except:
         print("User did not specify an Account Id when performing the request!")
     # Get all subjects from db, impose upper limit on number of subjects returned
-    return True
-
-@sio.event
-def connect(sid, environ):
-    sio.enter_room(sid, 'painters')
-
-
-@sio.event
-def paint(sid, data):
-    sio.emit('paint', data, room='painters', skip_sid=sid)
-
+    return "Hello"
 
 # Runs the app:
 if __name__ == '__main__':
-    app.run(threaded=True, debug=True)
+    app.run(debug=True)
 
