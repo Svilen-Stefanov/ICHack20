@@ -1,7 +1,7 @@
 import React, { Component, useEffect, useState } from 'react';
 import Webex from 'webex';
 import axios from 'axios';
-
+import queryString from "query-string";
 
 import { useStateWithLocalStorage } from '../utils'
 
@@ -164,6 +164,8 @@ function VideoCall() {
         'webexId'
     );
 
+    const [targetAccountId, setTargetAccountId] = useState(null);
+
 
     /* Execute this code once the component has loaded */
     useEffect(() => {
@@ -197,6 +199,27 @@ function VideoCall() {
         })
         console.log(webexId);
     }, [webexId])
+
+    /* Parse the account Id if specified as a target */
+    useEffect(() => {
+        if (queryString.parse(window.location.search).target) {
+            setTargetAccountId(queryString.parse(window.location.search).target);
+        }
+    })
+
+    /* Retrieve user data if one is specifying a target */
+    useEffect(() => {
+        if (targetAccountId) {
+            console.log("TARGET ID: " + targetAccountId);
+
+            axios.get('/profile/' + targetAccountId)
+                .then(res => {
+                    console.log(targetAccountId)
+                }).error(err => {
+                    console.err(err)
+                });
+        }
+    }, [targetAccountId])
 
     useEffect(() => {
         let activeMeeting

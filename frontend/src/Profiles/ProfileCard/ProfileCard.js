@@ -8,6 +8,7 @@ import queryString from "query-string";
 
 import "./ProfileCard.css";
 
+/* Route to the Videocall tab specifying a target user */
 const ConnectButton = withRouter(({ history, targetAccountId }) => (
     <Fab className="ProfileCard-connect" color={"primary"} variant={"extended"} onClick={() => {
         history.push('/videocall')
