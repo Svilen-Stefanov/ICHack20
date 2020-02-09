@@ -62,17 +62,18 @@ class Navbar extends Component {
                     </form>
                 </div>
                 <ul className="Navbar-items">
-                    <li>Friends</li>
-                    <li>item 2</li>
                     <li><AccountBoxIcon size={"inherit"} onClick={this.handleClick} /></li>
                 </ul>
                 <Drawer anchor={"right"} open={this.state.sideDrawerOpen} onClose={this.handleClick}>
                     <div className="Navbar-drawer">
+                        <button className="Navbar-drawer-close" onClick={this.handleClick}>x</button>
                         <img src="https://images.unsplash.com/photo-1517070208541-6ddc4d3efbcb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80" />
                         <div>
                             <button>My Profile</button>
                             <button>Settings</button>
-                            <button>Logout</button>
+                            <Link to="/login">
+                                <button>Logout</button>
+                            </Link>
                         </div>
                     </div>
                 </Drawer>

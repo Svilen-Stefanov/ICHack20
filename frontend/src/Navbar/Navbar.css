@@ -59,7 +59,7 @@
     height: 100px;
     width: 100px;
     border-radius: 50%;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 .Navbar-drawer button{
@@ -73,4 +73,11 @@
 
 .Navbar-drawer button:hover{
     background: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.Navbar-drawer-close{
+    
+    width: 25px !important;
+    float: left;
 }
