@@ -51,6 +51,10 @@ class Navbar extends Component {
                     this.setState({
                         showNav: false
                     });
+                } else {
+                    this.setState({
+                        showNav: true
+                    });
                 }
                 if (this.props.location.pathname !== "/") {
                     this.setState({
