@@ -20,16 +20,22 @@ class Profiles extends Component {
         this.setState({
             search: queryString.parse(window.location.search)
         });
+        const accountId = localStorage.getItem('accountId');
+        if (accountId) {
+            axios.defaults.headers.common = {
+                'Account-Id': accountId
+            };
 
-        axios.get('/dashboard', { transformResponse: [data => data] })
-            .then(res => {
-                const profilesRes = JSONBigInt.parse(res.data);
-                this.setState({
-                    profiles: profilesRes,
-                    profilesLoaded: true
+            axios.get('/dashboard', { transformResponse: [data => data] })
+                .then(res => {
+                    const profilesRes = JSONBigInt.parse(res.data);
+                    this.setState({
+                        profiles: profilesRes,
+                        profilesLoaded: true
+                    });
+                    console.log(profilesRes);
                 });
-                console.log(profilesRes);
-            });
+        }
     }
 
     render() {

@@ -138,19 +138,18 @@ def get_dashboard():
         user_id0 = request.headers['Account-Id']
     except:
         print("User did not specify an Account Id when performing the request!")
-
     all_users = DBUser.query.order_by(sqlalchemy.desc(DBUser.money)).all()
     all_users = all_users[:15]
     list_users = []
     for user in all_users:
-        print(user.profile_pic)
         status = session.query(DBFriend.status).filter(
-            (DBFriend.user_id1 == user_id0 and DBFriend.user_id2 == user.id) or (DBFriend.user_id2 == user_id0 and DBFriend.user_id1 == user.id)).first()
+            (DBFriend.user_id1 == user_id0 or DBFriend.user_id2 == user_id0) and (DBFriend.user_id1 == user.id and DBFriend.user_id2 == user.id)).first()
+        status = status[0]
         skills = session.query(DBTopic.name, DBUserTopicMap.expertise).join(DBUserTopicMap).filter(DBUserTopicMap.user_id==user.id).all()
         skills = [Skill(skill[0][0] + skill[0][1:].lower(), skill[1]) for skill in skills]
         user_name = user.first_name + " " + user.last_name
         profile = Profile(profile_id=user.id, webex_id=WEBEX_0, webex_handle=web_handle_0, name=user_name, image_url=user.profile_pic, institution=user.institution, skills=skills, age=calculateAge(user.date_of_birth), tokens=token_0)
-        print(user.profile_pic)
+        print(user_id0, status)
         profile_json = {
             "profile_id": profile.profile_id,
             "webex_id": profile.webex_id,
