@@ -219,7 +219,7 @@ def get_profile(profile_id):
     skills = [Skill(skill[0][0] + skill[0][1:].lower(), skill[1]) for skill in skills]
     print(profile_id)
     print('user', user.id)
-    output_user = User(user.id, user.first_name, user.last_name, user.date_of_birth, user.institution, user.description, user.profile_pic, token_0, skills)
+    output_user = User(user.id, user.first_name, user.last_name, user.date_of_birth, user.institution, user.description, user.profile_pic, token_0, skills, user.money)
     return jsonify(output_user)
 
 
@@ -323,6 +323,58 @@ def knowledge_graph():
             } for friend, subject in friends_left]
         });
 
+# Creates a new vault account
+@app.route('/send-money', methods=['GET'])
+def send_money():
+
+    user_account_id = None
+    user_send_to_id = None
+    money_amount = 0
+
+    data = request.get_json()
+
+    print(data)
+    try:
+        user_account_id = request.headers['Account-Id']
+        print(user_account_id)
+    except:
+        print("User did not specify an Account Id when performing the request!")
+        return "User did not specify an Account Id when performing the request!", 401
+
+    #try:
+    user_send_to_id = int(data['Send-To-Account-Id'])
+    print(user_send_to_id)
+    #except:
+    #    print("User did not specify an Account Id to send money to when performing the request!")
+    #    return "User did not specify an Account Id to send money to when performing the request!", 401
+
+    try:
+        money_amount = int(data['Money'])
+        print(money_amount)
+    except:
+        print("Money not specified!")
+        return "Money not specified", 401
+
+
+    user_from = DBUser.query.filter_by(id=user_account_id).first()
+    if user_from == None:
+        return "Could not get user", 401
+
+    user_to = DBUser.query.filter_by(id=user_send_to_id).first()
+    if user_to == None:
+        return "Could not get user", 401
+
+    if user_from.money < money_amount or money_amount < 0:
+        return "Cannot afford to pay", 401
+
+    user_from.money -= money_amount
+    user_to.money += money_amount
+
+    db.session.add(user_from)
+    db.session.add(user_to)
+    db.session.commit()
+
+    return "Successfully exchanged money", 200
 
 # Vault integration:
 
