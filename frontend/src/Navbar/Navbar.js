@@ -20,6 +20,24 @@ const VideoCallButton = withRouter(({ history }) => (
         }} />
 ))
 
+/* Route to the Videocall tab specifying a target user */
+const ProfileButton = withRouter(({ history }) => (
+    <button onClick={() => {
+        history.push('/personal/' + localStorage.getItem('accountId'))
+    }}>
+        My Profile
+    </button>
+))
+
+/* Route to the Videocall tab specifying a target user */
+const FriendGraphButton = withRouter(({ history }) => (
+    <button onClick={() => {
+        history.push('/graph')
+    }}>
+        Friend Graph
+    </button>
+))
+
 class Navbar extends Component {
     constructor(props) {
         super(props);
@@ -115,8 +133,8 @@ class Navbar extends Component {
                             <button className="Navbar-drawer-close" onClick={this.handleClick}>x</button>
                             <img src="https://images.unsplash.com/photo-1517070208541-6ddc4d3efbcb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80" />
                             <div>
-                                <button>My Profile</button>
-                                <button>Settings</button>
+                                <ProfileButton />
+                                <FriendGraphButton />
                                 <Link to="/login">
                                     <button>Logout</button>
                                 </Link>
