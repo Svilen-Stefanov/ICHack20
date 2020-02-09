@@ -186,8 +186,12 @@ def set_friendship():
     print(user_id0)
     print(user_id1)
     if user_id0 is not None and user_id1 is not None:
-        friendship = DBFriend('', user_id0, user_id1, 1)
+        friendship = DBFriend(user_id1=user_id0, user_id2=user_id1, status=1)
         session.add(friendship)
+        session.commit()
+    else:
+        return make_response("401")
+    return make_response("200")
 
 
 # The backend will aggregate what it thins is the best possible dashboard for the user.
