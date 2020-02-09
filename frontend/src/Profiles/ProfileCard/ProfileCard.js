@@ -22,6 +22,13 @@ const ConnectButton = withRouter(({ history, targetAccountId }) => (
     </Fab>
 ))
 
+/* Route to the Detail tab */
+const ProfileButton = withRouter(({ history, targetAccountId }) => (
+    <Fab className="ProfileCard-fullProfile" color={"primary"} variant={"extended"} onClick={() => {
+        history.push('/personal/' + targetAccountId)
+    }}>Full Profile</Fab>
+))
+
 class ProfileCard extends Component {
 
     static defaultProps = {
@@ -45,7 +52,7 @@ class ProfileCard extends Component {
                 <ul>{skillsList}</ul>
                 <div className="ProfileCard-footer">
                     <ConnectButton targetAccountId={targetAccountId} />
-                    <Fab className="ProfileCard-fullProfile" color={"primary"} variant={"extended"}>Full Profile</Fab>
+                    <ProfileButton targetAccountId={targetAccountId} />
                 </div>
             </div >
         );
