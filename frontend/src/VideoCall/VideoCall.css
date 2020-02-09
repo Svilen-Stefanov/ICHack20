@@ -18,7 +18,16 @@
     background: #cccccc;
     grid-row-start: 2;
     grid-column-start: 1;
-    grid-column-end: 0;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.Webex-video-stream-buddy-max {
+    background: #cccccc;
+    grid-row-start: 2;
+    grid-row-end: 5;
+    grid-column-start: 2;
+    grid-column-end: 4;
     width: 100% !important;
     height: 100% !important;
 }
@@ -47,10 +56,24 @@
     height: 100%;
 }
 
+.Webex-video-stream-self-max {
+    grid-row-start: 2;
+    grid-column-start: 1;
+    grid-column-end: 2;
+    background: #b3b3b3;
+    width: 100%;
+    height: 100%;
+}
+
 .Video-drawing-board {
     grid-row-start: 2;
     grid-column-start: 2;
     width: 100%;
+    display: block;
+}
+
+.Video-drawing-board-max {
+    display: none;
 }
 
 .user-padding {

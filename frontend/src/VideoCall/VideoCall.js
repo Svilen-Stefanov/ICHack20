@@ -174,7 +174,7 @@ function VideoCall() {
 
     const [targetUser, setTargetUser] = useState(null);
 
-    const [showDrawBoard, setShowDrawBoard] = useState(false);
+    const [showDrawBoard, setShowDrawBoard] = useState(true);
 
 
     /* Execute this code once the component has loaded */
@@ -324,12 +324,12 @@ function VideoCall() {
 
             <div className="user-padding"></div>
             <div className="Webex-video-container ">
-                <video className="Webex-video-stream-self" id="self-view" muted autoPlay></video>
-                <div className="Webex-video-stream-buddy">
+                <video className={showDrawBoard ? "Webex-video-stream-self" : "Webex-video-stream-self-max"} id="self-view" muted autoPlay></video>
+                <div className={showDrawBoard ? "Webex-video-stream-buddy" : "Webex-video-stream-buddy-max"}>
                     <audio id="remote-view-audio" autoPlay></audio>
                     <video id="remote-view-video" autoPlay></video>
                 </div>
-                <div className="Video-drawing-board">
+                <div className={showDrawBoard ? "Video-drawing-board" : "Video-drawing-board-max"}>
                     <Canvas />
                 </div>
                 <div className="Webex-video-buttons">
