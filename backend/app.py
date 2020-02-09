@@ -247,6 +247,33 @@ def get_subjects_with_topics():
 
     return jsonify({'subjects': subjects_to_send})
 
+# Gets a graph of relationships
+@app.route('/knowledge_graph', methods=['GET'])
+def get_subjects_with_topics():
+
+    # Get all subjects from db, impose upper limit on number of subjects returned
+    subjects_from_db = DBSubject.query.order_by(Subject.name).limit(100).all()
+    subjects_to_send = []
+    for subject in subjects_from_db:
+
+        topics = []
+        for topic in subject.topics:
+            top = {
+                'name': topic.name,
+                'description': topic.description
+                }
+            topics.append(top)
+
+        sub = {
+            'name': subject.name,
+            'description': subject.description,
+            'topics': topics
+        }
+
+        subjects_to_send.append(sub)
+
+    return jsonify({'subjects': subjects_to_send})
+
 @sio.event
 def connect(sid, environ):
     sio.enter_room(sid, 'painters')
