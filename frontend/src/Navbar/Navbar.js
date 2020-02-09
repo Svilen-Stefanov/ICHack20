@@ -4,6 +4,7 @@ import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import SearchIcon from '@material-ui/icons/Search';
 import Drawer from '@material-ui/core/Drawer';
 import queryString from "query-string";
+import { Link } from 'react-router-dom'
 
 import './Navbar.css';
 
@@ -11,10 +12,12 @@ class Navbar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            searchValue: ""
+            searchValue: "",
+            sideDrawerOpen: false
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleClick = this.handleClick.bind(this);
     }
 
     handleChange(e) {
@@ -30,11 +33,20 @@ class Navbar extends Component {
         e.preventDefault();
     }
 
+    handleClick() {
+        this.setState({
+            sideDrawerOpen: !this.state.sideDrawerOpen
+        });
+    }
+
     render() {
         return (
             <nav className="Navbar-container">
+
                 <div className="Navbar-logo">
-                    <h1> <SchoolIcon /> Study Buddy</h1>
+                    <Link to="/">
+                        <h1> <SchoolIcon /> Study Buddy</h1>
+                    </Link>
                 </div>
                 <div>
                     <form onSubmit={this.handleSubmit}>
@@ -52,9 +64,9 @@ class Navbar extends Component {
                 <ul className="Navbar-items">
                     <li>Friends</li>
                     <li>item 2</li>
-                    <li><AccountBoxIcon size={"inherit"} /></li>
+                    <li><AccountBoxIcon size={"inherit"} onClick={this.handleClick} /></li>
                 </ul>
-                <Drawer anchor={"right"} open={false}>
+                <Drawer anchor={"right"} open={this.state.sideDrawerOpen} onClose={this.handleClick}>
                     <div className="Navbar-drawer">
                         <img src="https://images.unsplash.com/photo-1517070208541-6ddc4d3efbcb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80" />
                         <div>

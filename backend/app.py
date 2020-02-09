@@ -13,6 +13,8 @@ from dataclasses import dataclass
 from dataclasses_json import dataclass_json, LetterCase
 from typing import List
 
+import json
+
 from model_classes import Profile, Skill, User, Topic, DashboardView
 
 import socketio
