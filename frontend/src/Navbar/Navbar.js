@@ -12,6 +12,14 @@ import { Link } from 'react-router-dom'
 
 import './Navbar.css';
 
+/* Route to the Videocall tab without */
+const VideoCallButton = withRouter(({ history }) => (
+    <VideoCallIcon fontSize={"large"} onClick={
+        () => {
+            history.push('/videocall')
+        }} />
+))
+
 class Navbar extends Component {
     constructor(props) {
         super(props);
@@ -84,7 +92,7 @@ class Navbar extends Component {
                         </form>
                     </div>
                     <ul className="Navbar-items">
-                        <li><VideoCallIcon fontSize={"large"} onClick={this.handleVideoCall} /></li>
+                        <li><VideoCallButton /></li>
                         <li><SettingsIcon fontSize={"large"} onClick={this.handleClick} /></li>
                     </ul>
                     <Drawer anchor={"right"} open={this.state.sideDrawerOpen} onClose={this.handleClick}>
