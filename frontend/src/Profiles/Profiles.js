@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import uuid from 'uuid/v4';
-
+import JSONBigInt from 'json-bigint';
 import ProfileCard from './ProfileCard/ProfileCard';
 import queryString from "query-string";
 
@@ -23,10 +23,9 @@ class Profiles extends Component {
             search: queryString.parse(window.location.search)
         });
 
-        axios.get('/dashboard')
+        axios.get('/dashboard', { transformResponse: [data => data] })
             .then(res => {
-
-                const profilesRes = res.data;
+                const profilesRes = JSONBigInt.parse(res.data);
                 this.setState({
                     profiles: profilesRes,
                     profilesLoaded: true

@@ -30,34 +30,6 @@ WEBEX_1 = "M2E2N2E3ZmMtNDQwYy00MTkxLWFkOGEtY2EyNzRlZTRkNWJlYzYxYjJjZjgtZGQz_PF84
 web_handle_0 = "studybuddy@webex.bot"
 web_handle_1 = "studyclient@webex.bot"
 
-
-@dataclass_json(letter_case=LetterCase.CAMEL)
-@dataclass
-class Profile:
-    profile_id: int
-    webex_id: str
-    webex_handle: str
-    name: str
-    image_url: str
-    institution: str
-    skills: List[Skill]
-    age: str
-    tokens: float
-
-
-@dataclass_json(letter_case=LetterCase.CAMEL)
-@dataclass
-class DashboardView:
-    profiles: List[Profile]
-
-
-@dataclass_json(letter_case=LetterCase.CAMEL)
-@dataclass
-class EnhancedProfile:
-    brief: Profile
-    description: str
-
-
 postgres_url = 'postgres://ffgllqemmjnrnm:c07be32cb7851a450198e43a4009a092a7c43c3678e0dc8d3ad3e309ead09669@ec2-54-246-89-234.eu-west-1.compute.amazonaws.com:5432/daahtl1du1mh0'
 
 ########################################################################
@@ -172,6 +144,7 @@ def get_dashboard():
             "tokens": profile.tokens,
         }
         list_users.append(profile_json)
+    print(list_users[0])
     return jsonify(list_users)
 
 
@@ -187,13 +160,16 @@ def get_dashboard_with_topic(topic_id):
 # Get a specific profile with a give ID
 @app.route('/profile/<profile_id>', methods=['GET'])
 def get_profile(profile_id):
-    try:
-        user_account_id = request.headers['Account-Id']
-        print(user_account_id)
-    except:
-        print("User did not specify an Account Id when performing the request!")
-    user = DBUser.query.filter_by(id=profile_id).first()
-    output_user = User(user.user_id, user.first_name, user.last_name, user.date_of_birth, user.institution, user.profile_pic)
+    # try:
+    #     user_account_id = request.headers['Account-Id']
+    #     print(user_account_id)
+    # except:
+    #     print("User did not specify an Account Id when performing the request!")
+    # user = DBUser.query.filter_by(id=profile_id).first()
+    user = session.query(DBUser).filter_by(id=4656151457587057193).first()
+    print(profile_id)
+    print('user', user.id)
+    output_user = User(user.id, user.first_name, user.last_name, user.date_of_birth, user.institution, user.description, user.profile_pic, web_handle_0)
     return jsonify(output_user)
 
 

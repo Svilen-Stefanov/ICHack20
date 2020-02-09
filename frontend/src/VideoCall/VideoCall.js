@@ -174,7 +174,9 @@ function VideoCall() {
         if (accountId) {
             axios.get('/profile/' + accountId)
                 .then(res => {
-                    setWebexId(res.data.brief.webex_id)
+                    console.log(res);
+
+                    setWebexId(res.data.webex_id)
                 });
         }
         console.log(accountId);
@@ -215,7 +217,7 @@ function VideoCall() {
             axios.get('/profile/' + targetAccountId)
                 .then(res => {
                     console.log(targetAccountId)
-                }).error(err => {
+                }).catch(err => {
                     console.err(err)
                 });
         }

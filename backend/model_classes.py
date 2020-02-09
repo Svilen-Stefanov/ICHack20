@@ -48,6 +48,7 @@ class User:
     institution: str
     description: str
     profile_pic: str
+    webex_id: str
 
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
