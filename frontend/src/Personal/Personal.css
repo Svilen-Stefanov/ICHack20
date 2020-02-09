@@ -1,3 +1,43 @@
+.Personal-page {
+    background: lightgray;
+    height: 100vh;
+    padding-top: 150px;
+}
+
 .Personal-container {
-    padding-top: 100px;
+    text-align: center;
+    padding: 10px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    background: white;
+    box-shadow: 10px 10px 11px -8px rgba(0,0,0,1);
+
+    display: grid;
+    grid-template-columns: 30% auto;;
+    grid-template-rows: 10% 30% 40% 10%;
+}
+
+.Personal-container img {
+    height: 300px;
+    width: 100%;
+}
+
+.Personal-institution {
+    grid-row-start: 4;
+    grid-column-start: 1    ;
+}
+
+.Personal-container ul {
+    grid-row-start: 2;
+    grid-column-start: 2;
+    text-align: left;
+    list-style: none;
+}
+
+.Personal-bio {
+    padding-left: 40px;
+    text-align: left;;
+    grid-row-start: 3;
+    grid-column-start: 2;
 }
