@@ -15,11 +15,11 @@ from model_classes import Profile, Skill, User, Topic, DashboardView
 # Importing vault:
 import sys, os
 
-#sys.path.append(os.path.join(os.path.dirname(__file__), "../vault/py_tm_vault_client_release_0.1.0_team5/py_tm_vault_client"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "../vault/py_tm_vault_client_release_0.1.0_team5/py_tm_vault_client"))
 
 # from client import TMVaultClient
-#from tmvault import TMVaultClient
-#client = TMVaultClient('../vault/py_tm_vault_client_release_0.1.0_team5/data/vault-config.json')
+from tmvault import TMVaultClient
+client = TMVaultClient('../vault/py_tm_vault_client_release_0.1.0_team5/data/vault-config.json')
 
 #accounts_for_person_a = client.accounts.list_accounts_for_customer('5320319443367695238')
 #print(accounts_for_person_a[0].name)
@@ -33,7 +33,7 @@ def calculateAge(birthDate):
     return age
 
 ########################################################################
-WEBEX_0 = "ZDExMmEyMWYtZjgyOS00MGZlLWI4MDgtOGU3YWJhYmQ4N2IyMTlmNjQ1OWMtOTdj_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
+WEBEX_0 = "MDRiMjFkMDctZThkOC00Mzg5LTljNDAtM2QxNDU3NjYyMzYwOWMxYzhlZWUtMTcw_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
 WEBEX_1 = WEBEX_0
 
 web_handle_0 = "studybuddy@webex.bot"
@@ -191,9 +191,11 @@ def get_profile(profile_id):
     #     print("User did not specify an Account Id when performing the request!")
     # user = DBUser.query.filter_by(id=profile_id).first()
     user = session.query(DBUser).filter_by(id=profile_id).first()
+    skills = session.query(DBTopic.name, DBUserTopicMap.expertise).join(DBUserTopicMap).filter(DBUserTopicMap.user_id == user.id).all()
+    skills = [Skill(skill[0][0] + skill[0][1:].lower(), skill[1]) for skill in skills]
     print(profile_id)
     print('user', user.id)
-    output_user = User(user.id, user.first_name, user.last_name, user.date_of_birth, user.institution, user.description, user.profile_pic, token_0)
+    output_user = User(user.id, user.first_name, user.last_name, user.date_of_birth, user.institution, user.description, user.profile_pic, token_0, skills)
     return jsonify(output_user)
 
 

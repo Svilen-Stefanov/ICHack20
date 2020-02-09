@@ -49,6 +49,7 @@ class User:
     description: str
     profile_pic: str
     webex_id: str
+    skills: List[Skill]
 
 
 @dataclass_json(letter_case=LetterCase.CAMEL)
