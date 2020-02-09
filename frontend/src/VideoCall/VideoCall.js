@@ -74,7 +74,6 @@ function connect() {
         }
         else {
             window.webex.meetings.syncMeetings()
-            console.log(window.webex.meetings.getAllMeetings())
             // Device was already connected
             resolve();
         }
@@ -239,8 +238,8 @@ function VideoCall() {
             // again, we don't want to reload when we try to dial
             event.preventDefault();
 
-            const destination = document.getElementById('invitee').value;
-            // const destination = "FIXED TOPIC"
+            // const destination = document.getElementById('invitee').value;
+            const destination = "studybuddy@webex.bot"
 
             // we'll use `connect()` (even though we might already be connected or
             // connecting) to make sure we've got a functional webex instance.
@@ -281,17 +280,15 @@ function VideoCall() {
                 onChange={event => setAccountId(event.target.value)} />
 
             <form id="destination">
-                <input
-                    id="invitee"
-                    name="invitee"
-                    placeholder="Person ID or Email Address or SIP URI or Room ID"
-                    type="text" />
-                <input title="join" type="submit" value="join" />
+                <fieldset>
+                    <legend>Start Call</legend>
+                    <input title="START CALL" type="submit" value="join" />
+                </fieldset>
             </form>
 
             <form id="credentials">
                 <fieldset>
-                    <legend>Allow Incoming Connections</legend>
+                    <legend>Connect</legend>
                     <input id="connect" title="connect" type="submit" value="connect" />
                     <p id="connection-status">disconnected</p>
                 </fieldset>

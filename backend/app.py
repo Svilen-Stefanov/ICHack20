@@ -52,7 +52,7 @@ class EnhancedProfile:
 
 ########################################################################
 WEBEX_0 = "ZDExMmEyMWYtZjgyOS00MGZlLWI4MDgtOGU3YWJhYmQ4N2IyMTlmNjQ1OWMtOTdj_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
-WEBEX_1 = "MDRiMjFkMDctZThkOC00Mzg5LTljNDAtM2QxNDU3NjYyMzYwOWMxYzhlZWUtMTcw_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
+WEBEX_1 = "ZDExMmEyMWYtZjgyOS00MGZlLWI4MDgtOGU3YWJhYmQ4N2IyMTlmNjQ1OWMtOTdj_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
 
 FAKE_PROFILES = {
     "0": Profile(0, f"{WEBEX_0}", "studybuddy9@webex.bot", "Bobby Tables", "example.com", "Imperial College London", [Skill("Dancing", 3)], 27, 3.42),
