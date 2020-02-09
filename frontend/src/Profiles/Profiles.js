@@ -28,7 +28,7 @@ class Profiles extends Component {
 
                 const profilesRes = res.data;
                 this.setState({
-                    profiles: profilesRes.profiles,
+                    profiles: profilesRes,
                     profilesLoaded: true
                 });
                 console.log(profilesRes);
@@ -43,7 +43,7 @@ class Profiles extends Component {
                     <ProfileCard key={uuid()}
                         name={profile.name}
                         age={profile.age}
-                        imgUrl={profile.imgUrl}
+                        imgUrl={profile.image_url}
                         institution={profile.institution}
                         skills={profile.skills}
                     />
