@@ -14,3 +14,22 @@
     height: 100vh;
 }
 
+
+.knowledge-pic {
+    width: 100%;
+    padding: 10%;
+}
+
+.knowledge-name {
+    width: 100%;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: 400;
+}
+
+.knowledge-instituion {
+    width: 100%;
+    text-align: center;
+    font-size: 1em;
+    font-weight: 300;
+}
