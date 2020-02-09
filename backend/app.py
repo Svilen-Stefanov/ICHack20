@@ -59,8 +59,11 @@ class EnhancedProfile:
 postgres_url = 'postgres://ffgllqemmjnrnm:c07be32cb7851a450198e43a4009a092a7c43c3678e0dc8d3ad3e309ead09669@ec2-54-246-89-234.eu-west-1.compute.amazonaws.com:5432/daahtl1du1mh0'
 
 ########################################################################
-token_0 = "MjczYjg1ZDgtYzQxNy00ZTljLTlkN2ItYzE5NzhmOGU3ZTFmNjdiZjRhYzctNzcx_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
-token_1 = "M2E2N2E3ZmMtNDQwYy00MTkxLWFkOGEtY2EyNzRlZTRkNWJlYzYxYjJjZjgtZGQz_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
+token_0 = "ZDExMmEyMWYtZjgyOS00MGZlLWI4MDgtOGU3YWJhYmQ4N2IyMTlmNjQ1OWMtOTdj_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
+token_1 = "ZDExMmEyMWYtZjgyOS00MGZlLWI4MDgtOGU3YWJhYmQ4N2IyMTlmNjQ1OWMtOTdj_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
+
+web_handle_0 = "studybuddy9@webex.bot"
+web_handle_1 = "studyclient9@webex.bot"
 
 FAKE_PROFILES = {
     "0": Profile(0, f"{WEBEX_0}", web_handle_0, "Bobby Tables", "example.com", "Imperial College London", [Skill("Dancing", 3)], 27, token_0),
@@ -91,8 +94,7 @@ session = DBSession()
 # Database models:
 class DBUser(db.Model):
     __tablename__ = 'user'
-    id = db.Column(db.Integer, primary_key=True, server_default=sqlalchemy.text(
-        'User_id_seq()'))
+    id = db.Column(db.Integer, primary_key=True, server_default=sqlalchemy.text('User_id_seq()'))
     first_name = db.Column(db.String(30), nullable=False)
     last_name = db.Column(db.String(30), nullable=True)
     date_of_birth = db.Column(DateTime)
@@ -196,7 +198,6 @@ def get_topic(topic_id):
 # Gets a list of all subjects
 @app.route('/subjects', methods=['GET'])
 def get_subjects():
-
     # Get all subjects from db, impose upper limit on number of subjects returned
     subjects_from_db = DBSubject.query.order_by(Subject.name).limit(100).all()
     subjects_to_send = []
@@ -233,23 +234,6 @@ def get_subjects_with_topics():
             'topics': topics
         }
 
-        subjects_to_send.append(sub)
-
-    return jsonify({'subjects': subjects_to_send})
-
-
-# Gets a list of all subjects
-@app.route('/subjects', methods=['GET'])
-def get_subjects():
-
-    # Get all subjects from db, impose upper limit on number of subjects returned
-    subjects_from_db = Subject.query.order_by(Subject.name).limit(100).all()
-    subjects_to_send = []
-    for subject in subjects_from_db:
-        sub = {
-            'title': subject.name,
-            'description': subject.description
-        }
         subjects_to_send.append(sub)
 
     return jsonify({'subjects': subjects_to_send})
