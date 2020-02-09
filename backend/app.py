@@ -139,7 +139,7 @@ def get_dashboard():
     except:
         print("User did not specify an Account Id when performing the request!")
 
-    all_users = DBUser.query.all()
+    all_users = DBUser.query.order_by(sqlalchemy.desc(DBUser.money)).all()
     all_users = all_users[:15]
     list_users = []
     for user in all_users:
@@ -167,9 +167,33 @@ def get_dashboard():
     return jsonify(list_users)
 
 
+# Create a friendship
+@app.route('/dashboard', methods=['PUT'])
+def set_friendship():
+    data = request.get_json()
+    user_id0 = None
+    try:
+        user_id0 = data['user_id']
+    except:
+        print("Received data with invalid format!")
+
+    user_id1 = None
+    try:
+        user_id1 = request.headers['Account-Id']
+    except:
+        print("User did not specify an Account Id when performing the request!")
+
+    print(user_id0)
+    print(user_id1)
+    if user_id0 is not None and user_id1 is not None:
+        friendship = DBFriend('', user_id0, user_id1, 1)
+        session.add(friendship)
+
+
 # The backend will aggregate what it thins is the best possible dashboard for the user.
-@app.route('/dashboard/<topic_id>', methods=['GET'])
-def get_dashboard_with_topic(topic_id):
+@app.route('/dashboard/<topic>', methods=['GET'])
+def get_dashboard_with_topic(topic):
+    topic_id = session.query(DBTopic.id).filter_by(name=topic).first()
     user_id0 = 0
     try:
         user_id0 = request.headers['Account-Id']
@@ -219,7 +243,7 @@ def get_profile(profile_id):
     skills = [Skill(skill[0][0] + skill[0][1:].lower(), skill[1]) for skill in skills]
     print(profile_id)
     print('user', user.id)
-    output_user = User(user.id, user.first_name, user.last_name, user.date_of_birth, user.institution, user.description, user.profile_pic, token_0, skills)
+    output_user = User(user.id, user.first_name, user.last_name, user.date_of_birth, user.institution, user.description, user.profile_pic, token_0, skills, user.money)
     return jsonify(output_user)
 
 
@@ -323,6 +347,58 @@ def knowledge_graph():
             } for friend, subject in friends_left]
         });
 
+# Creates a new vault account
+@app.route('/send-money', methods=['PUT', 'POST'])
+def send_money():
+
+    user_account_id = None
+    user_send_to_id = None
+    money_amount = 0
+
+    data = request.get_json()
+
+    print(data)
+    try:
+        user_account_id = request.headers['Account-Id']
+        print(user_account_id)
+    except:
+        print("User did not specify an Account Id when performing the request!")
+        return "User did not specify an Account Id when performing the request!", 401
+
+    #try:
+    user_send_to_id = int(data['Send-To-Account-Id'])
+    print(user_send_to_id)
+    #except:
+    #    print("User did not specify an Account Id to send money to when performing the request!")
+    #    return "User did not specify an Account Id to send money to when performing the request!", 401
+
+    try:
+        money_amount = int(data['Money'])
+        print(money_amount)
+    except:
+        print("Money not specified!")
+        return "Money not specified", 401
+
+
+    user_from = DBUser.query.filter_by(id=user_account_id).first()
+    if user_from == None:
+        return "Could not get user", 401
+
+    user_to = DBUser.query.filter_by(id=user_send_to_id).first()
+    if user_to == None:
+        return "Could not get user", 401
+
+    if user_from.money < money_amount or money_amount < 0:
+        return "Cannot afford to pay", 401
+
+    user_from.money -= money_amount
+    user_to.money += money_amount
+
+    db.session.add(user_from)
+    db.session.add(user_to)
+    db.session.commit()
+
+    return "Successfully exchanged money", 200
 
 # Vault integration:
 
@@ -341,4 +417,3 @@ def knowledge_graph():
 # Runs the app:
 if __name__ == '__main__':
     app.run(debug=True)
-

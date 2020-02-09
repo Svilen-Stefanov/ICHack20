@@ -1,7 +1,7 @@
 .ProfileCard-container {
     width: 400px;
     height: 500px;
-    background: rgba(255, 255, 255, 0.8);
+    background: white;
     float: left;
     margin-right: auto;
     text-align: center;
@@ -9,16 +9,44 @@
     margin: 20px 20px;
     box-shadow: 10px 10px 11px -8px rgba(0,0,0,0.8);
     cursor: pointer;
+    display: grid;
+    grid-template-columns: 15% 10% auto 10% 15%;
+    grid-template-rows: 10% 20% 20% 15% 20% auto;
 }
 
 .ProfileCard-container:hover {
-    transform: scale(1.05);
+    
     box-shadow: 10px 10px 11px -8px rgba(0,0,0,1);
 }
 
+.ProfileCard-container h2{
+    padding-top: 10px;
+    grid-column-start: 2;
+    grid-column-end: 5;
+}
+
 .ProfileCard-container img{
-    width: 50%;
-    height: 40%;
+    grid-row-start: 2;
+    grid-row-end: 4;
+    grid-column-start: 3;
+    grid-column-end: 4;
+    width: 100%;
+    height: 100%;
+}
+
+.Profile-institution {
+    grid-row-start: 4;
+    grid-row-end: 5;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    width: 100%;
+}
+
+.Profile-skills {
+    grid-row-start: 5;
+    grid-row-end: 6;
+    grid-column-start: 2;
+    grid-column-end: 5;
 }
 
 .ProfileCard-container ul {
@@ -27,6 +55,10 @@
 }
 
 .ProfileCard-footer{ 
+    grid-row-start: 7;
+    grid-row-end: 7;
+    grid-column-start: 1;
+    grid-column-end: 6;
     width: 100%;
     display: grid;
     grid-template-columns: 10% 39% auto 39% 10%;

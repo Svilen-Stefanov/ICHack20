@@ -86,11 +86,11 @@ class Navbar extends Component {
 
         if (showNav) {
             return (
-                < nav className="Navbar-container" >
+                <nav className="Navbar-container" >
 
                     <div className="Navbar-logo">
                         <Link to="/">
-                            <h1> <SchoolIcon /> Study Buddy </h1>
+                            <h1 className="Navbar-logo-text"> <SchoolIcon /> Study Buddy </h1>
                         </Link>
                     </div>
                     {showFilter && <div>

@@ -25,6 +25,7 @@ class Profile:
     tokens: float
 
 
+
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
 class EnhancedProfile:
@@ -50,6 +51,7 @@ class User:
     profile_pic: str
     webex_id: str
     skills: List[Skill]
+    money: int
 
 
 @dataclass_json(letter_case=LetterCase.CAMEL)

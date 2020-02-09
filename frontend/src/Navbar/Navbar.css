@@ -21,6 +21,11 @@
 
 .Navbar-logo:hover {
     cursor: pointer;
+    color: grey;
+}
+
+.Navbarlogo-text:hover {
+    color: grey;
 }
 
 .Navbar-items li:hover {
