@@ -6,12 +6,28 @@ import cytoscape from 'cytoscape';
 import spread from 'cytoscape-spread';
 import uuid from 'uuid/v4';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import queryString from "query-string";
+import Fab from '@material-ui/core/Fab';
+import { Route, withRouter } from 'react-router-dom';
+import VideoCallIcon from '@material-ui/icons/VideoCall';
 
 import CytoscapeComponent from 'react-cytoscapejs';
 
 import './KnowledgeGraph.css';
 import axios from 'axios';
 import JSONBigInt from 'json-bigint';
+
+const ConnectButton = withRouter(({ history, targetAccountId }) => (
+    <Fab className="kg-connect" color={"primary"} variant={"extended"} onClick={() => {
+        history.push('/videocall')
+        window.location.search = queryString.stringify({
+            target: targetAccountId
+        })
+    }}>
+        <VideoCallIcon />
+        VideoCall
+    </Fab>
+))
 
 
 class KnowledgeGraph extends Component {
@@ -26,6 +42,7 @@ class KnowledgeGraph extends Component {
             friend_name: '',
             friend_institution: '',
             friend_profile_pic: '',
+            friend_pid: '',
             friend_skills: []
         };
     }
@@ -46,25 +63,25 @@ class KnowledgeGraph extends Component {
                     let cluster_col = {};
                     let col_index = 0;
                     let colors = [
-                        '#FFA07A', '#8B0000', '#FF8C00', '#BDB76B', '#7FFF00', 
+                        '#FFA07A', '#8B0000', '#FF8C00', '#BDB76B', '#7FFF00',
                         '#7FFFD4', '#008080', '#4682B4', '#7B68EE', '#DDA0DD',
                         '#800080', '#DB7093', '#F5F5DC', '#FAEBD7', '#778899',
-                        '#FFEBCD', '#BC8F8F', '#A0522D', '#800000', '#DAA520'	
+                        '#FFEBCD', '#BC8F8F', '#A0522D', '#800000', '#DAA520'
                     ]
                     for (let i = colors.length - 1; i > 0; i--) {
                         const j = Math.floor(Math.random() * (i + 1));
                         [colors[i], colors[j]] = [colors[j], colors[i]];
                     }
-                
+
                     for (let i = 0; i < Math.min(friends.length, 20); ++i) {
                         if (!cluster_col.hasOwnProperty(friends[i].subject)) {
                             cluster_col[friends[i].subject] = colors[col_index];
                             col_index++;
                         }
                         elements.push({
-                            data: { 
+                            data: {
                                 id: i + 2,
-                                pid: friends[i].id, 
+                                pid: friends[i].id,
                                 label: friends[i].first + ' ' + friends[i].last,
                                 color: cluster_col[friends[i].subject], shape: "Rectangle"
 
@@ -75,7 +92,7 @@ class KnowledgeGraph extends Component {
                             data: { source: 1, target: i + 2 }
                         })
 
-                    } 
+                    }
                     this.setState({
                         elements: [
                             ...this.state.elements, ...elements
@@ -83,7 +100,7 @@ class KnowledgeGraph extends Component {
                     });
                     this.setState({
                         layout: {
-                            ...this.state.layout, 
+                            ...this.state.layout,
                             name: 'spread',
                             animate: true, // Whether to show the layout as it's running
                             ready: undefined, // Callback on layoutready
@@ -107,7 +124,7 @@ class KnowledgeGraph extends Component {
                             ...this.state.style,
                             width: '100%',
                             height: '100%',
-                            
+
                         }
                     })
                     this.setState({ show: true }, () => {
@@ -129,19 +146,20 @@ class KnowledgeGraph extends Component {
                                         friend_name: res.first_name + ' ' + res.last_name,
                                         friend_institution: res.institution,
                                         friend_skills: res.skills,
-                                        friend_profile_pic: res.profile_pic
+                                        friend_profile_pic: res.profile_pic,
+                                        friend_pid: data.pid
                                     })
                                     console.log(res);
                                 });
                             }.bind(this));
-                              
+
                         }
                     });
 
                 });
         }
     }
-    
+
     render() {
         cytoscape.use(spread);
         const skillsList = this.state.friend_skills.map(skill => (
@@ -155,11 +173,13 @@ class KnowledgeGraph extends Component {
                     <div className="knowledge-name">{this.state.friend_name}</div>
                     <div className="knowledge-instituion">{this.state.friend_institution}</div>
                     {skillsList}
-                    {/* {this.state.friend_skills.map((skill, i) => (<div key={i}>{skill}</div>))} */}
+                    { this.state.friend_name == '' ? <div></div> :
+                        <ConnectButton targetAccountId={this.state.friend_pid} />
+                    }
 
                 </div>
                 <div className="knowledge-graph-bg">
-                {this.state.show ? <CytoscapeComponent 
+                {this.state.show ? <CytoscapeComponent
                     cy={(cy) => { this.cy = cy }}
                     elements={this.state.elements} layout={this.state.layout} style={ { width: '100%', height: '100%' } } />
                 : <div></div>}
