@@ -177,7 +177,7 @@ def get_profile(profile_id):
     # except:
     #     print("User did not specify an Account Id when performing the request!")
     # user = DBUser.query.filter_by(id=profile_id).first()
-    user = session.query(DBUser).filter_by(id=4656151457587057193).first()
+    user = session.query(DBUser).filter_by(id=profile_id).first()
     print(profile_id)
     print('user', user.id)
     output_user = User(user.id, user.first_name, user.last_name, user.date_of_birth, user.institution, user.description, user.profile_pic, token_0)

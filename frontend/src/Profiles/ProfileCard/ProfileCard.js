@@ -28,7 +28,7 @@ class ProfileCard extends Component {
     }
 
     render() {
-        const { name, age, imgUrl, institution, skills, targetAccountId } = this.props;
+        let { name, age, imgUrl, institution, skills, targetAccountId } = this.props;
         if (imgUrl === "") {
             imgUrl = this.props.defaultImgUrl;
         }
