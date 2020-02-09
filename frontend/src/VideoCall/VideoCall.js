@@ -2,8 +2,12 @@ import React, { Component, useEffect, useState } from 'react';
 import Webex from 'webex';
 import axios from 'axios';
 import queryString from "query-string";
+import { Column, Row } from 'simple-flexbox';
+import Fab from '@material-ui/core/Fab';
 
 import { useStateWithLocalStorage } from '../utils'
+
+import Canvas from '../Canvas/Canvas'
 
 import JSONBigInt from 'json-bigint';
 
@@ -170,6 +174,8 @@ function VideoCall() {
 
     const [targetUser, setTargetUser] = useState(null);
 
+    const [showDrawBoard, setShowDrawBoard] = useState(true);
+
 
     /* Execute this code once the component has loaded */
     useEffect(() => {
@@ -230,6 +236,13 @@ function VideoCall() {
     useEffect(() => {
         let activeMeeting
 
+        if (targetUser) {
+            var el = document.getElementById('credentials'),
+                elClone = el.cloneNode(true);
+
+            el.parentNode.replaceChild(elClone, el);
+        }
+
         /* Print out the ID we are using to authenticate. */
         console.log("------------------------------------------------------");
 
@@ -245,9 +258,12 @@ function VideoCall() {
 
 
         // Now, let's set up incoming call handling
-        document.getElementById('credentials').addEventListener('submit', (event) => {
+        targetUser && document.getElementById('credentials').addEventListener('submit', (event) => {
             // let's make sure we don't reload the page when we submit the form
             event.preventDefault();
+
+            console.log("Above Guy");
+
 
             // The rest of the incoming call setup happens in connect();
             connect().then(() => {
@@ -263,9 +279,11 @@ function VideoCall() {
         });
 
         // And finally, let's wire up dialing
-        document.getElementById('destination').addEventListener('submit', (event) => {
+        !targetUser && document.getElementById('credentials').addEventListener('submit', (event) => {
             // again, we don't want to reload when we try to dial
             event.preventDefault();
+
+            console.log("Below Guy");
 
             // const destination = document.getElementById('invitee').value;
             const destination = "studybuddy@webex.bot"
@@ -293,40 +311,41 @@ function VideoCall() {
                     // Implement error handling here
                 });
         });
-    }, [])
+    }, [targetUser])
 
     return (
         <main className="Webex-container">
             <h1>Videochat with your Buddy</h1>
             <p>Call with your buddy and share wholesome knowledge!</p>
 
-            {targetUser && <div><h3>You are about to dial {targetUser.first_name}</h3><p>{targetUser.description}</p></div>}
+            {targetUser && <div className="user-padding"><h3>You are about to dial {targetUser.first_name}</h3><p>{targetUser.description}</p></div>}
 
-            <form id="destination">
-                <fieldset>
-                    <legend>Start Call</legend>
-                    <input title="START CALL" type="submit" value="join" />
-                </fieldset>
-            </form>
+            <div className="user-padding"></div>
 
-            <form id="credentials">
-                <fieldset>
-                    <legend>Connect</legend>
-                    <input id="connect" title="connect" type="submit" value="connect" />
-                    <p id="connection-status">disconnected</p>
-                </fieldset>
-            </form>
-
-            <div className="Webex-video-container">
-                <video className="Webex-video-stream" id="self-view" muted autoPlay></video>
-                <div className="Webex-video-stream">
+            <div className="user-padding"></div>
+            <div className="Webex-video-container ">
+                <video className={showDrawBoard ? "Webex-video-stream-self" : "Webex-video-stream-self-max"} id="self-view" muted autoPlay></video>
+                <div className={showDrawBoard ? "Webex-video-stream-buddy" : "Webex-video-stream-buddy-max"}>
                     <audio id="remote-view-audio" autoPlay></audio>
                     <video id="remote-view-video" autoPlay></video>
                 </div>
+                <div className={showDrawBoard ? "Video-drawing-board" : "Video-drawing-board-max"}>
+                    <Canvas />
+                </div>
+                <div className="Webex-video-buttons">
+                    {targetUser ? <form id="credentials" className="Webex-credential-forms">
+                        <Fab type="submit" color={"primary"} variant={"extended"} type="submit">Ring {targetUser.first_name}</Fab>
+                    </form> :
+                        < form id="credentials" className="Webex-credential-forms">
+                            <Fab type="submit" color={"success"} variant={"extended"} type="submit">Connect to Webex</Fab>
+                        </form>}
+                    <div className="user-padding"></div>
+                    <Fab color={"secondary"} variant={"extended"} id="hangup">Hangup</Fab>
+                    <Fab disabled={"true"} id="connection-status" variant={"extended"}>disconnected</Fab>
+                    <Fab color={"primary"} variant={"extended"} onClick={() => { setShowDrawBoard(!showDrawBoard) }}>Toggle DrawingBoard</Fab>
+                </div>
             </div>
-
-            <button id="hangup" title="hangup" type="button">cancel/hangup</button>
-        </main>
+        </main >
     );
 }
 

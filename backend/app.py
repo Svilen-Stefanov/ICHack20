@@ -12,6 +12,15 @@ from datetime import date
 
 from model_classes import Profile, Skill, User, Topic, DashboardView
 
+# Importing vault:
+import sys,os
+
+sys.path.append(os.path.join(os.path.dirname(__file__), "../vault/py_tm_vault_client_release_0.1.0_team5/py_tm_vault_client"))
+# from tmvault import TMVaultClient
+
+# accounts_for_person_a = client.accounts.list_accounts_for_customer('5320319443367695238')
+# print(accounts_for_person_a[0].name)
+
 
 def calculateAge(birthDate):
     today = date.today()
@@ -19,7 +28,7 @@ def calculateAge(birthDate):
     return age
 
 ########################################################################
-WEBEX_0 = "ZDExMmEyMWYtZjgyOS00MGZlLWI4MDgtOGU3YWJhYmQ4N2IyMTlmNjQ1OWMtOTdj_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
+WEBEX_0 = "MDRiMjFkMDctZThkOC00Mzg5LTljNDAtM2QxNDU3NjYyMzYwOWMxYzhlZWUtMTcw_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
 WEBEX_1 = WEBEX_0
 
 web_handle_0 = "studybuddy@webex.bot"
@@ -30,10 +39,23 @@ token_1 = WEBEX_0
 
 postgres_url = 'postgres://ffgllqemmjnrnm:c07be32cb7851a450198e43a4009a092a7c43c3678e0dc8d3ad3e309ead09669@ec2-54-246-89-234.eu-west-1.compute.amazonaws.com:5432/daahtl1du1mh0'
 
+user0_id = 2229561152441835583
+user1_id = 8360390402314484225
+
+# vault_client = TMVaultClient('../vault/py_tm_vault_client_release_0.1.0_team5/data/vault-config.json')
+
 FAKE_PROFILES = {
-    "0": Profile(0, f"{WEBEX_0}", web_handle_0, "Bobby Tables", "example.com", "Imperial College London", [Skill("Dancing", 3)], 27, token_0),
-    "1": Profile(1, f"{WEBEX_1}", web_handle_1, "Ms Bobby Tables", "exampl2e.com", "Imperial Collage London", [Skill("Maths", 1)], 28, token_1)
+    "0": Profile(user0_id, f"{WEBEX_0}", web_handle_0, "Bobby Tables", "example.com", "Imperial College London", [Skill("Dancing", 3)], 27, token_0),
+    "1": Profile(user1_id, f"{WEBEX_1}", web_handle_1, "Ms Bobby Tables", "exampl2e.com", "Imperial Collage London", [Skill("Maths", 1)], 28, token_1)
 }
+
+#FAKE_ACCOUNTS = {
+#   "0" : vault_client.accounts.create_account(product_id="", stakeholder_customer_ids=[str(user0_id)])
+#}
+
+#accounts_for_person_a = vault_client.customers.get_customers(customer_ids=[str(user0_id)])
+# accounts_for_person_b = vault_client.accounts.list_accounts_for_customer(customer_id=str(user0_id))
+#print(accounts_for_person_a)
 
 
 app = Flask(__name__)
@@ -49,7 +71,7 @@ app.config[
 db = SQLAlchemy(app)
 
 # Connect to Database and create database session
-engine = create_engine(postgres_url, connect_args={'connect_timeout': 10})
+engine = create_engine(postgres_url, pool_size=20, max_overflow=0, connect_args={'connect_timeout': 10})
 # Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
@@ -66,6 +88,7 @@ class DBUser(db.Model):
     institution = db.Column(db.String(30), nullable=True)
     description = db.Column(db.String(2000), nullable=True)
     profile_pic = db.Column(db.String(500), nullable=True)
+    money = db.Column(db.Integer, nullable=False)
 
 
 class DBSubject(db.Model):
@@ -110,13 +133,24 @@ class DBUserTopicMap(db.Model):
 # Main dashboard view.
 @app.route('/dashboard', methods=['GET'])
 def get_dashboard():
+    user_id0 = 0
+    try:
+        user_id0 = request.headers['Account-Id']
+    except:
+        print("User did not specify an Account Id when performing the request!")
+
     all_users = DBUser.query.all()
+    all_users = all_users[:15]
     list_users = []
     for user in all_users:
+        print(user.profile_pic)
+        status = session.query(DBFriend.status).filter(
+            (DBFriend.user_id1 == user_id0 and DBFriend.user_id2 == user.id) or (DBFriend.user_id2 == user_id0 and DBFriend.user_id1 == user.id)).first()
         skills = session.query(DBTopic.name, DBUserTopicMap.expertise).join(DBUserTopicMap).filter(DBUserTopicMap.user_id==user.id).all()
-        skills = [Skill(skill[0], skill[1]) for skill in skills]
+        skills = [Skill(skill[0][0] + skill[0][1:].lower(), skill[1]) for skill in skills]
         user_name = user.first_name + " " + user.last_name
-        profile = Profile(user.id, WEBEX_0, web_handle_0, user_name, user.profile_pic, user.institution, skills, calculateAge(user.date_of_birth), token_0)
+        profile = Profile(profile_id=user.id, webex_id=WEBEX_0, webex_handle=web_handle_0, name=user_name, image_url=user.profile_pic, institution=user.institution, skills=skills, age=calculateAge(user.date_of_birth), tokens=token_0)
+        print(user.profile_pic)
         profile_json = {
             "profile_id": profile.profile_id,
             "webex_id": profile.webex_id,
@@ -126,23 +160,31 @@ def get_dashboard():
             "institution": profile.institution,
             "skills": profile.skills,
             "age": profile.age,
-            "tokens": profile.tokens,
+            "token": profile.tokens,
+            "status": status,
         }
         list_users.append(profile_json)
-    print(list_users[0])
     return jsonify(list_users)
 
 
 # The backend will aggregate what it thins is the best possible dashboard for the user.
 @app.route('/dashboard/<topic_id>', methods=['GET'])
 def get_dashboard_with_topic(topic_id):
+    user_id0 = 0
+    try:
+        user_id0 = request.headers['Account-Id']
+    except:
+        print("User did not specify an Account Id when performing the request!")
     skilled_users = DBUserTopicMap.query.filter_by(topic_id=topic_id).all()
     list_users = []
     for u in skilled_users:
         user = session.query(DBUser).join(DBUserTopicMap).filter(DBUser.id == u.user_id).first()
         if user is not None:
+            status = session.query(DBFriend.status).join(DBUser).filter(
+                (DBFriend.user_id1 == user_id0 and DBFriend.user_id2 == user.id) or (
+                            DBFriend.user_id2 == user_id0 and DBFriend.user_id1 == user.id)).first()
             skills = session.query(DBTopic.name, DBUserTopicMap.expertise).join(DBUserTopicMap).filter(DBUserTopicMap.user_id == u.id).all()
-            skills = [Skill(skill[0], skill[1]) for skill in skills]
+            skills = [Skill(skill[0][0] + skill[0][1:].lower(), skill[1]) for skill in skills]
             user_name = user.first_name + " " + user.last_name
             profile = Profile(user.id, WEBEX_0, web_handle_0, user_name, user.profile_pic, user.institution, skills,
                               calculateAge(user.date_of_birth), token_0)
@@ -156,8 +198,10 @@ def get_dashboard_with_topic(topic_id):
                 "skills": profile.skills,
                 "age": profile.age,
                 "tokens": profile.tokens,
+                "status": status
             }
             list_users.append(profile_json)
+    list_users = list_users[:15]
     return jsonify(list_users)
 
 
@@ -171,9 +215,11 @@ def get_profile(profile_id):
     #     print("User did not specify an Account Id when performing the request!")
     # user = DBUser.query.filter_by(id=profile_id).first()
     user = session.query(DBUser).filter_by(id=profile_id).first()
+    skills = session.query(DBTopic.name, DBUserTopicMap.expertise).join(DBUserTopicMap).filter(DBUserTopicMap.user_id == user.id).all()
+    skills = [Skill(skill[0][0] + skill[0][1:].lower(), skill[1]) for skill in skills]
     print(profile_id)
     print('user', user.id)
-    output_user = User(user.id, user.first_name, user.last_name, user.date_of_birth, user.institution, user.description, user.profile_pic, token_0)
+    output_user = User(user.id, user.first_name, user.last_name, user.date_of_birth, user.institution, user.description, user.profile_pic, token_0, skills)
     return jsonify(output_user)
 
 
@@ -249,13 +295,13 @@ def knowledge_graph():
     friends_left = session.query(DBUser, DBSubject).join(
                 DBUserTopicMap, DBUser.id == DBUserTopicMap.user_id).join(
                 DBTopic, DBUserTopicMap.topic_id == DBTopic.id).join(
-                DBSubject, DBSubject.id == DBTopic.subject_id).join(        
+                DBSubject, DBSubject.id == DBTopic.subject_id).join(
                 DBFriend, DBFriend.user_id1 == DBUser.id).filter(
                 DBFriend.user_id2 == user_account_id and DBFriend.status == 1).all()
     friends_right = session.query(DBUser, DBSubject).join(
                 DBUserTopicMap, DBUser.id == DBUserTopicMap.user_id).join(
                 DBTopic, DBUserTopicMap.topic_id == DBTopic.id).join(
-                DBSubject, DBSubject.id == DBTopic.subject_id).join(        
+                DBSubject, DBSubject.id == DBTopic.subject_id).join(
                 DBFriend, DBFriend.user_id2 == DBUser.id).filter(
                 DBFriend.user_id1 == user_account_id and DBFriend.status == 1).all()
     friends_left.extend(friends_right)
@@ -266,16 +312,30 @@ def knowledge_graph():
             'first': myself.first_name,
             'last': myself.last_name
         },
-        'friends': 
+        'friends':
         [
             {
                 'id': friend.id,
-                'first': friend.first_name,  
+                'first': friend.first_name,
                 'last': friend.last_name,
                 'subject': subject.name
 
             } for friend, subject in friends_left]
         });
+
+
+# Vault integration:
+
+# Creates a new vault account
+# @app.route('/create_account/<id>', methods=['GET'])
+#def create_vault_account(id):
+#    return jsonify({'customer': vault_client.customers.create_customer(customer_id=id)})
+
+
+# Creates a new vault account
+#@app.route('/create_customer_account/<id>', methods=['GET'])
+#def create_vault_account(id):
+#    return jsonify({'account': vault_client.accounts.create_account(account_id=id)})
 
 
 # Runs the app:

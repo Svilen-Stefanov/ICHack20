@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import uuid from 'uuid/v4';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import StarIcon from '@material-ui/icons/Star';
 import Fab from '@material-ui/core/Fab';
 import { Route, withRouter } from 'react-router-dom';
 import queryString from "query-string";
@@ -21,6 +22,13 @@ const ConnectButton = withRouter(({ history, targetAccountId }) => (
     </Fab>
 ))
 
+/* Route to the Detail tab */
+const ProfileButton = withRouter(({ history, targetAccountId }) => (
+    <Fab className="ProfileCard-fullProfile" color={"primary"} variant={"extended"} onClick={() => {
+        history.push('/personal/' + targetAccountId)
+    }}>Full Profile</Fab>
+))
+
 class ProfileCard extends Component {
 
     static defaultProps = {
@@ -33,11 +41,8 @@ class ProfileCard extends Component {
             imgUrl = this.props.defaultImgUrl;
         }
         const skillsList = this.props.skills.map(skill => (
-            <li key={uuid()}><CheckBoxIcon fontSize={"small"} /> {skill.skill_name}: {'*'.repeat(skill.experience_level)}</li>
+            <li key={uuid()}><CheckBoxIcon fontSize={"small"} /> {skill.skill_name}: {"*".repeat(skill.experience_level)}</li>
         ));
-        const nextPath = (path) => {
-            this.props.history.push(path);
-        }
         return (
             <div className="ProfileCard-container">
                 <h2>{name} ({age})</h2>
@@ -47,7 +52,7 @@ class ProfileCard extends Component {
                 <ul>{skillsList}</ul>
                 <div className="ProfileCard-footer">
                     <ConnectButton targetAccountId={targetAccountId} />
-                    <Fab className="ProfileCard-fullProfile" color={"primary"} variant={"extended"}>Full Profile</Fab>
+                    <ProfileButton targetAccountId={targetAccountId} />
                 </div>
             </div >
         );
