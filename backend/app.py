@@ -183,6 +183,8 @@ def set_friendship():
     except:
         print("User did not specify an Account Id when performing the request!")
 
+    print(user_id0)
+    print(user_id1)
     if user_id0 is not None and user_id1 is not None:
         friendship = DBFriend('', user_id0, user_id1, 1)
         session.add(friendship)

@@ -7,6 +7,8 @@ import StarIcon from '@material-ui/icons/Star';
 import Fab from '@material-ui/core/Fab';
 import { Route, withRouter } from 'react-router-dom';
 import queryString from "query-string";
+import axios from 'axios';
+import JSONBigInt from 'json-bigint';
 
 import "./ProfileCard.css";
 
@@ -24,11 +26,16 @@ const ConnectButton = withRouter(({ history, targetAccountId }) => (
 ))
 
 /* Prompt the user to become a friend */
-const FriendButton = (({ targetName, friendshipSetter }) => (
+const FriendButton = (({ targetName, targetId, friendshipSetter }) => (
     <Fab className="ProfileCard-connect" color={"secondary"} variant={"extended"} onClick={() => {
         if (window.confirm('Do you wish to add ' + targetName + ' as a friend?')) {
-            // TODO: Actually add as a friend
-            friendshipSetter(true)
+
+            axios.put('/dashboard', { user_id: targetId })
+                .then(res => {
+                    friendshipSetter(true)
+                }).catch(err => {
+                    console.err(err)
+                });
         }
         else {
             console.log("You did not procees with friend request");
@@ -86,7 +93,7 @@ class ProfileCard extends Component {
                     <ul>{skillsList}</ul>
                 </div>
                 <div className="ProfileCard-footer">
-                    {this.state.status ? <ConnectButton targetAccountId={targetAccountId} /> : <FriendButton targetName={name} friendshipSetter={friendshipSetter} />}
+                    {this.state.status ? <ConnectButton targetAccountId={targetAccountId} /> : <FriendButton targetName={name} targetId={targetAccountId} friendshipSetter={friendshipSetter} />}
                     <ProfileButton targetAccountId={targetAccountId} />
                 </div>
             </div >
