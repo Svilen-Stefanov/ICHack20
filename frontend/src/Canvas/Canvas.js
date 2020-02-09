@@ -11,6 +11,7 @@ class Canvas extends Component {
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
         this.endPaintEvent = this.endPaintEvent.bind(this);
+        this.socket = null;
         this.state = { show: false };
     }
     isPainting = false;
@@ -65,7 +66,7 @@ class Canvas extends Component {
         const body = {
             line: this.line
         };
-
+        this.socket.emit('paint', this.line);
         this.line = [];
     }
 
@@ -83,8 +84,15 @@ class Canvas extends Component {
             this.canvas.height = document.getElementById('outer').offsetHeight;
             this.setState({ show: true });
         }, 1000);
-        
-        io.connect('localhost:5000');
+
+        this.socket = io.connect('localhost:5000');
+        this.socket.on('paint', (data) => {
+            const line = data;
+            line.forEach((position) => {
+                this.paint(position.start, position.stop, this.guestStrokeStyle);
+            });
+
+        })
         // socket.emit('my_event', {data: 'I\'m connected!'});
 
     }
