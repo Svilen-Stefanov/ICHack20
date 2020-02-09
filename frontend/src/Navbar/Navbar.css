@@ -47,7 +47,11 @@
 }
 
 .Navbar-items li {
-    margin-left: 50px;
+    margin-left: 100px;
+}
+
+.Navbar-items li:hover {
+    transform: scale(1.1);
 }
 
 .Navbar-drawer {
@@ -59,7 +63,7 @@
     height: 100px;
     width: 100px;
     border-radius: 50%;
-    margin-top: 20px;
+    margin-top: px;
 }
 
 .Navbar-drawer button{

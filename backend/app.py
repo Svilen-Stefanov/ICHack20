@@ -12,6 +12,18 @@ from datetime import date
 
 from model_classes import Profile, Skill, User, Topic, DashboardView
 
+# Importing vault:
+import sys, os
+
+#sys.path.append(os.path.join(os.path.dirname(__file__), "../vault/py_tm_vault_client_release_0.1.0_team5/py_tm_vault_client"))
+
+# from client import TMVaultClient
+#from tmvault import TMVaultClient
+#client = TMVaultClient('../vault/py_tm_vault_client_release_0.1.0_team5/data/vault-config.json')
+
+#accounts_for_person_a = client.accounts.list_accounts_for_customer('5320319443367695238')
+#print(accounts_for_person_a[0].name)
+
 import socketio
 
 
@@ -118,10 +130,11 @@ class DBUserTopicMap(db.Model):
 @app.route('/dashboard', methods=['GET'])
 def get_dashboard():
     all_users = DBUser.query.all()
+    all_users = all_users[:15]
     list_users = []
     for user in all_users:
         skills = session.query(DBTopic.name, DBUserTopicMap.expertise).join(DBUserTopicMap).filter(DBUserTopicMap.user_id==user.id).all()
-        skills = [Skill(skill[0], skill[1]) for skill in skills]
+        skills = [Skill(skill[0][0] + skill[0][1:].lower(), skill[1]) for skill in skills]
         user_name = user.first_name + " " + user.last_name
         profile = Profile(user.id, WEBEX_0, web_handle_0, user_name, user.profile_pic, user.institution, skills, calculateAge(user.date_of_birth), token_0)
         profile_json = {
@@ -136,7 +149,6 @@ def get_dashboard():
             "tokens": profile.tokens,
         }
         list_users.append(profile_json)
-    print(list_users[0])
     return jsonify(list_users)
 
 
@@ -149,7 +161,7 @@ def get_dashboard_with_topic(topic_id):
         user = session.query(DBUser).join(DBUserTopicMap).filter(DBUser.id == u.user_id).first()
         if user is not None:
             skills = session.query(DBTopic.name, DBUserTopicMap.expertise).join(DBUserTopicMap).filter(DBUserTopicMap.user_id == u.id).all()
-            skills = [Skill(skill[0], skill[1]) for skill in skills]
+            skills = [Skill(skill[0][0] + skill[0][1:].lower(), skill[1]) for skill in skills]
             user_name = user.first_name + " " + user.last_name
             profile = Profile(user.id, WEBEX_0, web_handle_0, user_name, user.profile_pic, user.institution, skills,
                               calculateAge(user.date_of_birth), token_0)
@@ -165,6 +177,7 @@ def get_dashboard_with_topic(topic_id):
                 "tokens": profile.tokens,
             }
             list_users.append(profile_json)
+    list_users = list_users[:15]
     return jsonify(list_users)
 
 
@@ -266,7 +279,20 @@ def paint(sid, data):
     sio.emit('paint', data, room='painters', skip_sid=sid)
 
 
+# Vault integration:
+
+# Creates a new vault account
+#@app.route('/create_account/<id>', methods=['GET'])
+#def create_vault_account(id):
+#    return jsonify({'customer': vault_client.customers.create_customer(customer_id=id)})
+
+
+# Creates a new vault account
+#@app.route('/create_customer_account/<id>', methods=['GET'])
+#def create_vault_account(id):
+#    return jsonify({'account': vault_client.accounts.create_account(account_id=id)})
+
+
 # Runs the app:
 if __name__ == '__main__':
     app.run(threaded=True, debug=True)
-

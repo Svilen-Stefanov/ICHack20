@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import uuid from 'uuid/v4';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import StarIcon from '@material-ui/icons/Star';
 import Fab from '@material-ui/core/Fab';
 import { Route, withRouter } from 'react-router-dom';
 import queryString from "query-string";
@@ -33,7 +34,7 @@ class ProfileCard extends Component {
             imgUrl = this.props.defaultImgUrl;
         }
         const skillsList = this.props.skills.map(skill => (
-            <li key={uuid()}><CheckBoxIcon fontSize={"small"} /> {skill.skill_name}: {'*'.repeat(skill.experience_level)}</li>
+            <li key={uuid()}><CheckBoxIcon fontSize={"small"} /> {skill.skill_name}: {"*".repeat(skill.experience_level)}</li>
         ));
         const nextPath = (path) => {
             this.props.history.push(path);

@@ -9,15 +9,10 @@ class Login extends Component {
                 <div class="Landing-content-container">
                     <br />
                     <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
                     <h1>Welcome to Study Buddy</h1>
-                    <h1>We believe education should have no limits</h1>
+                    <br />
+                    <h1>Education without limits, powered by CISCO</h1>
+                    <button>Login</button>
                 </div>
             </div>
         );

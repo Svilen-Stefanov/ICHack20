@@ -21,3 +21,4 @@ typing==3.7.4.1
 psycopg2==2.8.4
 python-socketio==4.4.0
 eventlet==0.25.1
+python-dateutil==1.4

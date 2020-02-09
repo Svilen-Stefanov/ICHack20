@@ -16,6 +16,7 @@ frontend:
 .PHONY: backend
 backend:
 	cd backend;\
+	export PYTHONPATH=$(abspath vault/py_tm_vault_client_release_0.1.0_team5/py_tm_vault_client/tmvault) && \
 	python3 app.py
 
 .PHONY: vault
