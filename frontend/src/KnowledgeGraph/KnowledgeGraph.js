@@ -34,6 +34,7 @@ class KnowledgeGraph extends Component {
     constructor(props) {
         super(props);
         this.cy = null;
+        this.color_maps = {};
         this.state = {
             elements: [],
             layout: { name: 'cise' },
@@ -63,7 +64,7 @@ class KnowledgeGraph extends Component {
                     let cluster_col = {};
                     let col_index = 0;
                     let colors = [
-                        '#FFA07A', '#8B0000', '#FF8C00', '#BDB76B', '#7FFF00',
+                        '#FFA07A', '#9B0000', '#FF8C00', '#BDB76B', '#7FFF00',
                         '#7FFFD4', '#008080', '#4682B4', '#7B68EE', '#DDA0DD',
                         '#800080', '#DB7093', '#F5F5DC', '#FAEBD7', '#778899',
                         '#FFEBCD', '#BC8F8F', '#A0522D', '#800000', '#DAA520'
@@ -87,6 +88,7 @@ class KnowledgeGraph extends Component {
 
                             }
                         })
+                        this.color_maps = cluster_col;
 
                         elements.push({
                             data: { source: 1, target: i + 2 }
@@ -166,6 +168,15 @@ class KnowledgeGraph extends Component {
             <li key={uuid()}><CheckBoxIcon fontSize={"small"} /> {skill.skill_name}: {"*".repeat(skill.experience_level)}</li>
         ));
 
+        const colorList = [];
+        for (let key of Object.keys(this.color_maps)) {
+            colorList.push(
+                <div style={{float: 'left'}} key={uuid()}>
+                    <div style={{'marginRight': '1em'}}><span style={{height: '1em', width: '1em', 'borderRadius': '50%', display: 'inline-block', 'backgroundColor': this.color_maps[key]}}></span>{key}</div>
+                </div>
+            )
+        }
+
         return (
             <main className="knowledge-graph-container">
                 <div className="knowledge-graph-fg">
@@ -184,6 +195,7 @@ class KnowledgeGraph extends Component {
                     elements={this.state.elements} layout={this.state.layout} style={ { width: '100%', height: '100%' } } />
                 : <div></div>}
                 </div>
+                <div className="kg-footer">{colorList}</div>
             </main>
         );
     }

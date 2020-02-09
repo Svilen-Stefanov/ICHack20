@@ -39,3 +39,13 @@
   width: 80% !important;
   margin: 10% !important;
 }
+
+.kg-footer {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  height: 60px;
+  width: 100%;
+  padding:10px;
+  background: white;
+}
