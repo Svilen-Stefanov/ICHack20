@@ -140,6 +140,7 @@ class KnowledgeGraph extends Component {
                             this.cy.nodes().on('click', function(e){
                                 let clickedNode = e.target;
                                 let data = clickedNode._private.data;
+                                if (!data.pid) { return; }
                                 axios.get('/profile/' + data.pid, { transformResponse: [data => data] })
                                 .then(res => {
                                     res = JSONBigInt.parse(res.data);
