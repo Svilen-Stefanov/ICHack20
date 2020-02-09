@@ -4,6 +4,7 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import VideoCallIcon from '@material-ui/icons/VideoCall';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import StarIcon from '@material-ui/icons/Star';
+import Fade from 'react-reveal/Fade';
 import Fab from '@material-ui/core/Fab';
 import { Route, withRouter } from 'react-router-dom';
 import queryString from "query-string";
@@ -85,18 +86,22 @@ class ProfileCard extends Component {
 
         }
         return (
-            <div className="ProfileCard-container">
-                <h2 className="Profile-name">{name} ({age})</h2>
-                <img src={imgUrl} />
-                <h2 className="Profile-institution">{institution}</h2>
-                <div className="Profile-skills">
-                    <ul>{skillsList}</ul>
-                </div>
-                <div className="ProfileCard-footer">
-                    {this.state.status == 0 ? <ConnectButton targetAccountId={targetAccountId} /> : <FriendButton targetName={name} targetId={targetAccountId} friendshipSetter={friendshipSetter} />}
-                    <ProfileButton targetAccountId={targetAccountId} />
-                </div>
-            </div >
+
+            <Fade bottom duration={500}>
+                <div className="ProfileCard-container">
+                    <h2 className="Profile-name">{name} ({age})</h2>
+                    <img src={imgUrl} />
+                    <h2 className="Profile-institution">{institution}</h2>
+                    <div className="Profile-skills">
+                        <ul>{skillsList}</ul>
+                    </div>
+                    <div className="ProfileCard-footer">
+                        {this.state.status == 0 ? <ConnectButton targetAccountId={targetAccountId} /> : <FriendButton targetName={name} targetId={targetAccountId} friendshipSetter={friendshipSetter} />}
+                        <ProfileButton targetAccountId={targetAccountId} />
+                    </div>
+                </div >
+            </Fade>
+
         );
     }
 }

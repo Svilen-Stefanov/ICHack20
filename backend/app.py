@@ -18,8 +18,19 @@ import sys,os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../vault/py_tm_vault_client_release_0.1.0_team5/py_tm_vault_client"))
 # from tmvault import TMVaultClient
 
+<<<<<<< HEAD
+# from client import TMVaultClient
+#from tmvault import TMVaultClient
+#client = TMVaultClient('../vault/py_tm_vault_client_release_0.1.0_team5/data/vault-config.json')
+
+#accounts_for_person_a = client.accounts.list_accounts_for_customer('5320319443367695238')
+#print(accounts_for_person_a[0].name)
+
+import socketio
+=======
 # accounts_for_person_a = client.accounts.list_accounts_for_customer('5320319443367695238')
 # print(accounts_for_person_a[0].name)
+>>>>>>> fd7c678244435585fbe15aa72e2b88db47baeb45
 
 
 def calculateAge(birthDate):
@@ -186,8 +197,12 @@ def set_friendship():
     print(user_id0)
     print(user_id1)
     if user_id0 is not None and user_id1 is not None:
-        friendship = DBFriend('', user_id0, user_id1, 1)
+        friendship = DBFriend(user_id1=user_id0, user_id2=user_id1, status=1)
         session.add(friendship)
+        session.commit()
+    else:
+        return make_response("401")
+    return make_response("200")
 
 
 # The backend will aggregate what it thins is the best possible dashboard for the user.
