@@ -167,9 +167,31 @@ def get_dashboard():
     return jsonify(list_users)
 
 
+# Create a friendship
+@app.route('/dashboard', methods=['PUT'])
+def set_friendship():
+    data = request.get_json()
+    user_id0 = None
+    try:
+        user_id0 = data['user_id']
+    except:
+        print("Received data with invalid format!")
+
+    user_id1 = None
+    try:
+        user_id1 = request.headers['Account-Id']
+    except:
+        print("User did not specify an Account Id when performing the request!")
+
+    if user_id0 is not None and user_id1 is not None:
+        friendship = DBFriend('', user_id0, user_id1, 1)
+        session.add(friendship)
+
+
 # The backend will aggregate what it thins is the best possible dashboard for the user.
-@app.route('/dashboard/<topic_id>', methods=['GET'])
-def get_dashboard_with_topic(topic_id):
+@app.route('/dashboard/<topic>', methods=['GET'])
+def get_dashboard_with_topic(topic):
+    topic_id = session.query(DBTopic.id).filter_by(name=topic).first()
     user_id0 = 0
     try:
         user_id0 = request.headers['Account-Id']
