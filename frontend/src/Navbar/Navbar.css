@@ -14,6 +14,20 @@
     margin-left: 50px;
 }
 
+.Navbar-logo h1{
+    color: white;
+    text-decoration: none;
+}
+
+.Navbar-logo:hover {
+    cursor: pointer;
+}
+
+.Navbar-items li:hover {
+    color: grey;
+    cursor: pointer;
+}
+
 .Navbar-search {
     margin-left: 5px;
     border: none;
@@ -38,6 +52,7 @@
 
 .Navbar-drawer {
     text-align: center;
+    width: 300px;
 }
 
 .Navbar-drawer img {
@@ -51,5 +66,11 @@
     display: block;
     margin-left: auto;
     margin-right: auto;
+    font-size: 20px;
+    width: 100%;
+    border: none;
 }
 
+.Navbar-drawer button:hover{
+    background: rgba(0, 0, 0, 0.2);
+}

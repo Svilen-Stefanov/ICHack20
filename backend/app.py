@@ -9,14 +9,11 @@ from flask import request
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from datetime import date
-from dataclasses import dataclass
-from dataclasses_json import dataclass_json, LetterCase
-from typing import List
 
 from model_classes import Profile, Skill, User, Topic, DashboardView
 
 import socketio
-import eventlet
+
 
 def calculateAge(birthDate):
     today = date.today()
@@ -30,14 +27,10 @@ WEBEX_1 = "M2E2N2E3ZmMtNDQwYy00MTkxLWFkOGEtY2EyNzRlZTRkNWJlYzYxYjJjZjgtZGQz_PF84
 web_handle_0 = "studybuddy@webex.bot"
 web_handle_1 = "studyclient@webex.bot"
 
-postgres_url = 'postgres://ffgllqemmjnrnm:c07be32cb7851a450198e43a4009a092a7c43c3678e0dc8d3ad3e309ead09669@ec2-54-246-89-234.eu-west-1.compute.amazonaws.com:5432/daahtl1du1mh0'
-
-########################################################################
 token_0 = "ZDExMmEyMWYtZjgyOS00MGZlLWI4MDgtOGU3YWJhYmQ4N2IyMTlmNjQ1OWMtOTdj_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
 token_1 = "ZDExMmEyMWYtZjgyOS00MGZlLWI4MDgtOGU3YWJhYmQ4N2IyMTlmNjQ1OWMtOTdj_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
 
-web_handle_0 = "studybuddy9@webex.bot"
-web_handle_1 = "studyclient9@webex.bot"
+postgres_url = 'postgres://ffgllqemmjnrnm:c07be32cb7851a450198e43a4009a092a7c43c3678e0dc8d3ad3e309ead09669@ec2-54-246-89-234.eu-west-1.compute.amazonaws.com:5432/daahtl1du1mh0'
 
 FAKE_PROFILES = {
     "0": Profile(0, f"{WEBEX_0}", web_handle_0, "Bobby Tables", "example.com", "Imperial College London", [Skill("Dancing", 3)], 27, token_0),
@@ -45,13 +38,11 @@ FAKE_PROFILES = {
 }
 
 
-
 sio = socketio.Server(async_mode='threading', cors_allowed_origins=['http://localhost:3000'])
 app = Flask(__name__)
 app.config['CORS_SUPPORTS_CREDENTIALS'] = True
 
 app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
-
 
 
 # Allow Cross-origin policy on all endpoints
@@ -65,7 +56,7 @@ app.config[
 db = SQLAlchemy(app)
 
 # Connect to Database and create database session
-engine = create_engine(postgres_url)
+engine = create_engine(postgres_url, connect_args={'connect_timeout': 10})
 # Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
@@ -129,7 +120,8 @@ def get_dashboard():
     all_users = DBUser.query.all()
     list_users = []
     for user in all_users:
-        skills = session.query(DBTopic.name).join(DBUserTopicMap).filter(DBUserTopicMap.user_id==user.id).all()
+        skills = session.query(DBTopic.name, DBUserTopicMap.expertise).join(DBUserTopicMap).filter(DBUserTopicMap.user_id==user.id).all()
+        skills = [Skill(skill[0], skill[1]) for skill in skills]
         user_name = user.first_name + " " + user.last_name
         profile = Profile(user.id, WEBEX_0, web_handle_0, user_name, user.profile_pic, user.institution, skills, calculateAge(user.date_of_birth), token_0)
         profile_json = {
@@ -152,9 +144,28 @@ def get_dashboard():
 @app.route('/dashboard/<topic_id>', methods=['GET'])
 def get_dashboard_with_topic(topic_id):
     skilled_users = DBUserTopicMap.query.filter_by(topic_id=topic_id).all()
-    # Generate the data to be returned
-    fake_return = DashboardView([FAKE_PROFILES['0'], FAKE_PROFILES['1']])
-    return jsonify(fake_return)
+    list_users = []
+    for u in skilled_users:
+        user = session.query(DBUser).join(DBUserTopicMap).filter(DBUser.id == u.user_id).first()
+        if user is not None:
+            skills = session.query(DBTopic.name, DBUserTopicMap.expertise).join(DBUserTopicMap).filter(DBUserTopicMap.user_id == u.id).all()
+            skills = [Skill(skill[0], skill[1]) for skill in skills]
+            user_name = user.first_name + " " + user.last_name
+            profile = Profile(user.id, WEBEX_0, web_handle_0, user_name, user.profile_pic, user.institution, skills,
+                              calculateAge(user.date_of_birth), token_0)
+            profile_json = {
+                "profile_id": profile.profile_id,
+                "webex_id": profile.webex_id,
+                "webex_handle": profile.webex_handle,
+                "name": profile.name,
+                "image_url": profile.image_url,
+                "institution": profile.institution,
+                "skills": profile.skills,
+                "age": profile.age,
+                "tokens": profile.tokens,
+            }
+            list_users.append(profile_json)
+    return jsonify(list_users)
 
 
 # Get a specific profile with a give ID
@@ -234,13 +245,16 @@ def get_subjects_with_topics():
 
     return jsonify({'subjects': subjects_to_send})
 
+
 @sio.event
 def connect(sid, environ):
     sio.enter_room(sid, 'painters')
 
+
 @sio.event
 def paint(sid, data):
     sio.emit('paint', data, room='painters', skip_sid=sid)
+
 
 # Runs the app:
 if __name__ == '__main__':
