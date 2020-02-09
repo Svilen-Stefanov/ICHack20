@@ -39,6 +39,11 @@
     grid-column-end: 1;
 }
 
+.Webex-credential-forms {
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
 .Webex-credential-forms button {
     width: 100%;
 }

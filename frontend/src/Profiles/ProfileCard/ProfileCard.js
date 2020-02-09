@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import uuid from 'uuid/v4';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import VideoCallIcon from '@material-ui/icons/VideoCall';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import StarIcon from '@material-ui/icons/Star';
 import Fab from '@material-ui/core/Fab';
@@ -17,6 +18,23 @@ const ConnectButton = withRouter(({ history, targetAccountId }) => (
             target: targetAccountId
         })
     }}>
+        <VideoCallIcon />
+        VideoCall
+    </Fab>
+))
+
+/* Prompt the user to become a friend */
+const FriendButton = (({ targetName, friendshipSetter }) => (
+    <Fab className="ProfileCard-connect" color={"secondary"} variant={"extended"} onClick={() => {
+        if (window.confirm('Do you wish to add ' + targetName + ' as a friend?')) {
+            // TODO: Actually add as a friend
+            friendshipSetter(true)
+        }
+        else {
+            console.log("You did not procees with friend request");
+        }
+
+    }}>
         <PersonAddIcon />
         Connect
     </Fab>
@@ -30,19 +48,35 @@ const ProfileButton = withRouter(({ history, targetAccountId }) => (
 ))
 
 class ProfileCard extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            status: props.status,
+        }
+    }
 
     static defaultProps = {
         defaultImgUrl: "https://images.unsplash.com/photo-1517070208541-6ddc4d3efbcb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60"
     }
 
     render() {
-        let { name, age, imgUrl, institution, skills, targetAccountId } = this.props;
+        let { name, age, imgUrl, institution, status, targetAccountId } = this.props;
+
         if (imgUrl === "") {
             imgUrl = this.props.defaultImgUrl;
         }
         const skillsList = this.props.skills.slice(0, 2).map(skill => (
             <li key={uuid()}><CheckBoxIcon fontSize={"small"} /> {skill.skill_name}: {"*".repeat(skill.experience_level)}</li>
         ));
+
+        const friendshipSetter = (state) => {
+            status = state
+            this.setState({
+                status: state
+            });
+            console.log("Status updated!");
+
+        }
         return (
             <div className="ProfileCard-container">
                 <h2 className="Profile-name">{name} ({age})</h2>
@@ -52,7 +86,7 @@ class ProfileCard extends Component {
                     <ul>{skillsList}</ul>
                 </div>
                 <div className="ProfileCard-footer">
-                    <ConnectButton targetAccountId={targetAccountId} />
+                    {this.state.status ? <ConnectButton targetAccountId={targetAccountId} /> : <FriendButton targetName={name} friendshipSetter={friendshipSetter} />}
                     <ProfileButton targetAccountId={targetAccountId} />
                 </div>
             </div >
