@@ -84,3 +84,11 @@
 .user-padding {
     padding-top: 16px;
 }
+
+.Webex-token-overview {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    width: 350px;
+    height: 250px;
+}

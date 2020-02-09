@@ -176,6 +176,9 @@ function VideoCall() {
 
     const [showDrawBoard, setShowDrawBoard] = useState(true);
 
+    const [displayTokenOverview, setDisplayTokenOverview] = useState(false)
+    const [giftToken, setGiftToken] = useState(true)
+
 
     /* Execute this code once the component has loaded */
     useEffect(() => {
@@ -313,6 +316,19 @@ function VideoCall() {
         });
     }, [targetUser])
 
+    /* Gift tokens to someone */
+    const giftTokenCb = () => {
+        if (targetAccountId) {
+            axios.post('/send-money', { 'Send-To-Account-Id': targetAccountId, 'Money': 1 })
+                .then(res => {
+                    // Success!
+                    setGiftToken(false)
+                }).catch(err => {
+                    console.err(err)
+                });
+        }
+    }
+
     return (
         <main className="Webex-container">
             <h1>Videochat with your Buddy</h1>
@@ -330,7 +346,13 @@ function VideoCall() {
                     <video id="remote-view-video" autoPlay></video>
                 </div>
                 <div className={showDrawBoard ? "Video-drawing-board" : "Video-drawing-board-max"}>
-                    <Canvas />
+                    {displayTokenOverview ?
+                        <div className="Webex-token-overview">
+                            <h2>Good experience?</h2>
+                            <h3>Gift a Token!</h3>
+                            <div className="user-padding"></div>
+                            <Fab disabled={!giftToken} color={giftToken ? "primary" : "secondary"} variant={"extended"} onClick={() => { giftTokenCb() }}>{giftToken ? "Gift a Token" : "Thank You!"}</Fab>
+                        </div> : <Canvas />}
                 </div>
                 <div className="Webex-video-buttons">
                     {targetUser ? <form id="credentials" className="Webex-credential-forms">
@@ -340,7 +362,10 @@ function VideoCall() {
                             <Fab type="submit" color={"success"} variant={"extended"} type="submit">Connect to Webex</Fab>
                         </form>}
                     <div className="user-padding"></div>
-                    <Fab color={"secondary"} variant={"extended"} id="hangup">Hangup</Fab>
+                    <Fab color={"secondary"} variant={"extended"} id="hangup" onClick={() => {
+                        setDisplayTokenOverview(true)
+                        setShowDrawBoard(true)
+                    }}>Hangup</Fab>
                     <Fab disabled={"true"} id="connection-status" variant={"extended"}>disconnected</Fab>
                     <Fab color={"primary"} variant={"extended"} onClick={() => { setShowDrawBoard(!showDrawBoard) }}>Toggle DrawingBoard</Fab>
                 </div>
