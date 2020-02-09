@@ -25,7 +25,7 @@ function App() {
 
   /* TODO: Currently Account ID is hardcoded to a given value that exists in the database */
   useEffect(() => {
-    setAccountId(5108936145776826674)
+    setAccountId("5108936145776826674")
 
     /* Ensure global axios configuration will inject the accountId as a header */
     axios.defaults.headers.common = {
