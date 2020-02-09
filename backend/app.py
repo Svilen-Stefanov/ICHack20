@@ -246,8 +246,36 @@ def knowledge_graph():
         print(user_account_id)
     except:
         print("User did not specify an Account Id when performing the request!")
-    # Get all subjects from db, impose upper limit on number of subjects returned
-    return "Hello"
+    friends_left = session.query(DBUser, DBSubject).join(
+                DBUserTopicMap, DBUser.id == DBUserTopicMap.user_id).join(
+                DBTopic, DBUserTopicMap.topic_id == DBTopic.id).join(
+                DBSubject, DBSubject.id == DBTopic.subject_id).join(        
+                DBFriend, DBFriend.user_id1 == DBUser.id).filter(
+                DBFriend.user_id2 == user_account_id and DBFriend.status == 1).all()
+    friends_right = session.query(DBUser, DBSubject).join(
+                DBUserTopicMap, DBUser.id == DBUserTopicMap.user_id).join(
+                DBTopic, DBUserTopicMap.topic_id == DBTopic.id).join(
+                DBSubject, DBSubject.id == DBTopic.subject_id).join(        
+                DBFriend, DBFriend.user_id2 == DBUser.id).filter(
+                DBFriend.user_id1 == user_account_id and DBFriend.status == 1).all()
+    friends_left.extend(friends_right)
+
+    myself = session.query(DBUser).filter(DBUser.id == user_account_id).first();
+    return jsonify({
+        'myself': {
+            'first': myself.first_name,
+            'last': myself.last_name
+        },
+        'friends': 
+        [
+            {
+                'first': friend.first_name,  
+                'last': friend.last_name,
+                'subject': subject.name
+
+            } for friend, subject in friends_left]
+        });
+
 
 # Runs the app:
 if __name__ == '__main__':
