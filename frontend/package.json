@@ -19,6 +19,7 @@
     "socket.io-client": "^2.3.0",
     "socketio": "^1.0.0",
     "uuid": "^3.4.0",
+    "vis-react": "^0.4.8",
     "webex": "^1.80.109"
   },
   "scripts": {

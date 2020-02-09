@@ -1,0 +1,9 @@
+.knowledge-graph-container {
+    padding-top: 100px;
+    width: 100%;
+    height: 100vh;
+    text-align: center;
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+}

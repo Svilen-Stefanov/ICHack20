@@ -8,6 +8,7 @@ import Login from './Login/Login';
 import Profiles from './Profiles/Profiles';
 import Canvas from './Canvas/Canvas';
 import VideoCall from './VideoCall/VideoCall';
+import KnowledgeGraph from './KnowledgeGraph/KnowledgeGraph';
 
 import { useStateWithLocalStorage } from './utils'
 
@@ -42,6 +43,7 @@ function App() {
         <Route path='/test2/:number' component={Profiles} />
         <Route path='/login' component={Login} />
         <Route path='/canvas' component={Canvas} />
+        <Route path='/graph' component={KnowledgeGraph} />
       </Switch>
 
     </div>
