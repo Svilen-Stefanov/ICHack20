@@ -20,7 +20,7 @@ class Profile:
     name: str
     image_url: str
     institution: str
-    skills: List[Skill]
+    skills: list
     age: str
     tokens: float
 
