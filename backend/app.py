@@ -122,7 +122,7 @@ def get_dashboard():
     all_users = DBUser.query.all()
     list_users = []
     for user in all_users:
-        skills = session.query(DBTopic.name).join(DBUserTopicMap).filter(DBUserTopicMap.user_id==user.id).all()
+        skills = session.query(DBTopic.name, DBUserTopicMap.expertise).join(DBUserTopicMap).filter(DBUserTopicMap.user_id==user.id).all()
         user_name = user.first_name + " " + user.last_name
         profile = Profile(user.id, WEBEX_0, web_handle_0, user_name, user.profile_pic, user.institution, skills, calculateAge(user.date_of_birth), token_0)
         profile_json = {
@@ -144,9 +144,27 @@ def get_dashboard():
 @app.route('/dashboard/<topic_id>', methods=['GET'])
 def get_dashboard_with_topic(topic_id):
     skilled_users = DBUserTopicMap.query.filter_by(topic_id=topic_id).all()
-    # Generate the data to be returned
-    fake_return = DashboardView([FAKE_PROFILES['0'], FAKE_PROFILES['1']])
-    return jsonify(fake_return)
+    list_users = []
+    for u in skilled_users:
+        user = session.query(DBUser).join(DBUserTopicMap).filter(DBUser.id == u.user_id).first()
+        if user is not None:
+            skills = session.query(DBTopic.name, DBUserTopicMap.expertise).join(DBUserTopicMap).filter(DBUserTopicMap.user_id == u.id).all()
+            user_name = user.first_name + " " + user.last_name
+            profile = Profile(user.id, WEBEX_0, web_handle_0, user_name, user.profile_pic, user.institution, skills,
+                              calculateAge(user.date_of_birth), token_0)
+            profile_json = {
+                "profile_id": profile.profile_id,
+                "webex_id": profile.webex_id,
+                "webex_handle": profile.webex_handle,
+                "name": profile.name,
+                "image_url": profile.image_url,
+                "institution": profile.institution,
+                "skills": profile.skills,
+                "age": profile.age,
+                "tokens": profile.tokens,
+            }
+            list_users.append(profile_json)
+    return jsonify(list_users)
 
 
 # Get a specific profile with a give ID
