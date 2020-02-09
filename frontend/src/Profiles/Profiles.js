@@ -46,6 +46,7 @@ class Profiles extends Component {
                         imgUrl={profile.image_url}
                         institution={profile.institution}
                         skills={profile.skills}
+                        targetAccountId={profile.profile_id}
                     />
                 )
             })
