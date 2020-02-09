@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import SchoolIcon from '@material-ui/icons/School';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import SearchIcon from '@material-ui/icons/Search';
@@ -13,11 +14,21 @@ class Navbar extends Component {
         super(props);
         this.state = {
             searchValue: "",
-            sideDrawerOpen: false
+            sideDrawerOpen: false,
+            showNav: true
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleClick = this.handleClick.bind(this);
+        console.log(this.props.location);
+    }
+
+    componentDidMount() {
+        if (this.props.location.pathname === "/login") {
+            this.setState({
+                showNav: false
+            });
+        }
     }
 
     handleChange(e) {
@@ -40,46 +51,54 @@ class Navbar extends Component {
     }
 
     render() {
-        return (
-            <nav className="Navbar-container">
+        const { showNav } = this.state;
 
-                <div className="Navbar-logo">
-                    <Link to="/">
-                        <h1> <SchoolIcon /> Study Buddy</h1>
-                    </Link>
-                </div>
-                <div>
-                    <form onSubmit={this.handleSubmit}>
-                        <SearchIcon />
-                        <input
-                            className="Navbar-search"
-                            placeholder="Search skills.."
-                            type="text"
-                            name="search"
-                            value={this.state.searchValue}
-                            onChange={this.handleChange}
-                        />
-                    </form>
-                </div>
-                <ul className="Navbar-items">
-                    <li><AccountBoxIcon size={"inherit"} onClick={this.handleClick} /></li>
-                </ul>
-                <Drawer anchor={"right"} open={this.state.sideDrawerOpen} onClose={this.handleClick}>
-                    <div className="Navbar-drawer">
-                        <button className="Navbar-drawer-close" onClick={this.handleClick}>x</button>
-                        <img src="https://images.unsplash.com/photo-1517070208541-6ddc4d3efbcb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80" />
-                        <div>
-                            <button>My Profile</button>
-                            <button>Settings</button>
-                            <Link to="/login">
-                                <button>Logout</button>
-                            </Link>
-                        </div>
+        if (showNav) {
+            return (
+                < nav className="Navbar-container" >
+
+                    <div className="Navbar-logo">
+                        <Link to="/">
+                            <h1> <SchoolIcon /> Study Buddy </h1>
+                        </Link>
                     </div>
-                </Drawer>
-            </nav>
-        );
+                    <div>
+                        <form onSubmit={this.handleSubmit}>
+                            <SearchIcon />
+                            <input
+                                className="Navbar-search"
+                                placeholder="Search skills.."
+                                type="text"
+                                name="search"
+                                value={this.state.searchValue}
+                                onChange={this.handleChange}
+                            />
+                        </form>
+                    </div>
+                    <ul className="Navbar-items">
+                        <li><AccountBoxIcon size={"inherit"} onClick={this.handleClick} /></li>
+                    </ul>
+                    <Drawer anchor={"right"} open={this.state.sideDrawerOpen} onClose={this.handleClick}>
+                        <div className="Navbar-drawer">
+                            <button className="Navbar-drawer-close" onClick={this.handleClick}>x</button>
+                            <img src="https://images.unsplash.com/photo-1517070208541-6ddc4d3efbcb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80" />
+                            <div>
+                                <button>My Profile</button>
+                                <button>Settings</button>
+                                <Link to="/login">
+                                    <button>Logout</button>
+                                </Link>
+                            </div>
+                        </div>
+                    </Drawer>
+                </nav >
+            );
+        } else {
+            return (
+                <div></div>
+            );
+        }
     }
 }
 
-export default Navbar;
+export default withRouter(Navbar);
