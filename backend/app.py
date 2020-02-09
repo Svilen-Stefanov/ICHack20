@@ -258,7 +258,7 @@ def get_subjects():
 
 
 # Gets a list of all subjects with their topics
-@app.route('/subjects_with_topics', methods=['GET'])
+@app.route('/subjects_with_topics', methods=['PUT', 'POST'])
 def get_subjects_with_topics():
 
     # Get all subjects from db, impose upper limit on number of subjects returned
@@ -393,4 +393,3 @@ def send_money():
 # Runs the app:
 if __name__ == '__main__':
     app.run(debug=True)
-
