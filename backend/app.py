@@ -169,7 +169,7 @@ def get_profile(profile_id):
     user = session.query(DBUser).filter_by(id=4656151457587057193).first()
     print(profile_id)
     print('user', user.id)
-    output_user = User(user.id, user.first_name, user.last_name, user.date_of_birth, user.institution, user.description, user.profile_pic, web_handle_0)
+    output_user = User(user.id, user.first_name, user.last_name, user.date_of_birth, user.institution, user.description, user.profile_pic, token_0)
     return jsonify(output_user)
 
 

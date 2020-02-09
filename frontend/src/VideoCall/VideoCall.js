@@ -166,6 +166,8 @@ function VideoCall() {
 
     const [targetAccountId, setTargetAccountId] = useState(null);
 
+    const [targetUser, setTargetUser] = useState(null);
+
 
     /* Execute this code once the component has loaded */
     useEffect(() => {
@@ -216,7 +218,7 @@ function VideoCall() {
 
             axios.get('/profile/' + targetAccountId)
                 .then(res => {
-                    console.log(targetAccountId)
+                    setTargetUser(res.data)
                 }).catch(err => {
                     console.err(err)
                 });
@@ -293,16 +295,10 @@ function VideoCall() {
 
     return (
         <main className="Webex-container">
-            <h1>Meetings Quick Start</h1>
-            <p>This sample demonstrates how to start a meeting using Webex JS-SDK in the browser.</p>
+            <h1>Videochat with your Buddy</h1>
+            <p>Call with your buddy and share wholesome knowledge!</p>
 
-            <input
-                id="accountIdInput"
-                name="accountIdInput"
-                placeholder="Insert to change AccountId"
-                type="text"
-                value={accountId}
-                onChange={event => setAccountId(event.target.value)} />
+            {targetUser && <div><h3>You are about to dial {targetUser.first_name}</h3><p>{targetUser.description}</p></div>}
 
             <form id="destination">
                 <fieldset>
