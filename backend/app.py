@@ -9,9 +9,14 @@ from flask import request
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from datetime import date
+from dataclasses import dataclass
+from dataclasses_json import dataclass_json, LetterCase
+from typing import List
 
 from model_classes import Profile, Skill, User, Topic, DashboardView
 
+import socketio
+import eventlet
 
 def calculateAge(birthDate):
     today = date.today()
@@ -25,21 +30,60 @@ WEBEX_1 = "M2E2N2E3ZmMtNDQwYy00MTkxLWFkOGEtY2EyNzRlZTRkNWJlYzYxYjJjZjgtZGQz_PF84
 web_handle_0 = "studybuddy@webex.bot"
 web_handle_1 = "studyclient@webex.bot"
 
-token_0 = 3.42
-token_1 = 2.42
+
+@dataclass_json(letter_case=LetterCase.CAMEL)
+@dataclass
+class Profile:
+    profile_id: int
+    webex_id: str
+    webex_handle: str
+    name: str
+    image_url: str
+    institution: str
+    skills: List[Skill]
+    age: str
+    tokens: float
+
+
+@dataclass_json(letter_case=LetterCase.CAMEL)
+@dataclass
+class DashboardView:
+    profiles: List[Profile]
+
+
+@dataclass_json(letter_case=LetterCase.CAMEL)
+@dataclass
+class EnhancedProfile:
+    brief: Profile
+    description: str
+
 
 postgres_url = 'postgres://ffgllqemmjnrnm:c07be32cb7851a450198e43a4009a092a7c43c3678e0dc8d3ad3e309ead09669@ec2-54-246-89-234.eu-west-1.compute.amazonaws.com:5432/daahtl1du1mh0'
 
 ########################################################################
+token_0 = "ZDExMmEyMWYtZjgyOS00MGZlLWI4MDgtOGU3YWJhYmQ4N2IyMTlmNjQ1OWMtOTdj_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
+token_1 = "ZDExMmEyMWYtZjgyOS00MGZlLWI4MDgtOGU3YWJhYmQ4N2IyMTlmNjQ1OWMtOTdj_PF84_ce4a2d3d-b708-4cf1-816e-049be0c172f0"
+
+web_handle_0 = "studybuddy9@webex.bot"
+web_handle_1 = "studyclient9@webex.bot"
+
 FAKE_PROFILES = {
     "0": Profile(0, f"{WEBEX_0}", web_handle_0, "Bobby Tables", "example.com", "Imperial College London", [Skill("Dancing", 3)], 27, token_0),
     "1": Profile(1, f"{WEBEX_1}", web_handle_1, "Ms Bobby Tables", "exampl2e.com", "Imperial Collage London", [Skill("Maths", 1)], 28, token_1)
 }
 
 
+
+sio = socketio.Server(async_mode='threading', cors_allowed_origins=['http://localhost:3000'])
 app = Flask(__name__)
+app.config['CORS_SUPPORTS_CREDENTIALS'] = True
+
+app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
+
+
+
 # Allow Cross-origin policy on all endpoints
-CORS(app)
+CORS(app, resources={r"/*": {"Access-Control-Allow-Origin": "*"}})
 
 # -------------------------------------------------------------
 # Database connection:
@@ -55,13 +99,11 @@ engine = create_engine(postgres_url)
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-
 # -------------------------------------------------------------
 # Database models:
 class DBUser(db.Model):
     __tablename__ = 'user'
-    id = db.Column(db.Integer, primary_key=True, server_default=sqlalchemy.text(
-        'User_id_seq()'))
+    id = db.Column(db.Integer, primary_key=True, server_default=sqlalchemy.text('User_id_seq()'))
     first_name = db.Column(db.String(30), nullable=False)
     last_name = db.Column(db.String(30), nullable=True)
     date_of_birth = db.Column(DateTime)
@@ -176,7 +218,6 @@ def get_topic(topic_id):
 # Gets a list of all subjects
 @app.route('/subjects', methods=['GET'])
 def get_subjects():
-
     # Get all subjects from db, impose upper limit on number of subjects returned
     subjects_from_db = DBSubject.query.order_by(Subject.name).limit(100).all()
     subjects_to_send = []
@@ -217,7 +258,15 @@ def get_subjects_with_topics():
 
     return jsonify({'subjects': subjects_to_send})
 
+@sio.event
+def connect(sid, environ):
+    sio.enter_room(sid, 'painters')
+
+@sio.event
+def paint(sid, data):
+    sio.emit('paint', data, room='painters', skip_sid=sid)
 
 # Runs the app:
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(threaded=True, debug=True)
+

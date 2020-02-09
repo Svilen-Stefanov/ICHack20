@@ -4,7 +4,9 @@ import axios from 'axios';
 import { Switch, Route } from 'react-router-dom'
 
 import Navbar from './Navbar/Navbar';
+import Login from './Login/Login';
 import Profiles from './Profiles/Profiles';
+import Canvas from './Canvas/Canvas';
 import VideoCall from './VideoCall/VideoCall';
 
 import { useStateWithLocalStorage } from './utils'
@@ -20,9 +22,6 @@ function App() {
   const [accountId, setAccountId] = useStateWithLocalStorage(
     'accountId'
   );
-  const [webexId, setWebexId] = useStateWithLocalStorage(
-    'webexId'
-  );
 
   /* TODO: Currently Account ID is hardcoded to 0 */
   useEffect(() => {
@@ -32,12 +31,6 @@ function App() {
     axios.defaults.headers.common = {
       'Account-Id': accountId
     };
-
-    /* Retrieve webex ID from backend and store in local storage */
-    axios.get('/profile/' + accountId)
-      .then(res => {
-        setWebexId(res.data.brief.webex_id)
-      });
   }, [accountId]);
 
   return (
@@ -47,6 +40,8 @@ function App() {
         <Route exact path='/' component={Profiles} />
         <Route path='/videocall' component={VideoCall} />
         <Route path='/test2/:number' component={Profiles} />
+        <Route path='/login' component={Login} />
+        <Route path='/canvas' component={Canvas} />
       </Switch>
 
     </div>
