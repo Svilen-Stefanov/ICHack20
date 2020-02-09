@@ -174,6 +174,8 @@ function VideoCall() {
 
     const [targetUser, setTargetUser] = useState(null);
 
+    const [showDrawBoard, setShowDrawBoard] = useState(false);
+
 
     /* Execute this code once the component has loaded */
     useEffect(() => {
@@ -327,8 +329,9 @@ function VideoCall() {
                     < form id="credentials">
                         <Fab type="submit" color={"success"} variant={"extended"} type="submit">Connect to Webex</Fab>
                     </form>}
-                <Fab disabled="true" id="connection-status" variant={"extended"}>disconnected</Fab>
+                <Fab disabled={"true"} id="connection-status" variant={"extended"}>disconnected</Fab>
                 <Fab color={"secondary"} variant={"extended"} id="hangup">Hangup</Fab>
+                <Fab color={"primary"} variant={"extended"} onClick={() => { setShowDrawBoard(!showDrawBoard) }}>Toggle DrawingBoard</Fab>
             </Row>
 
             <div className="user-padding"></div>
@@ -344,12 +347,9 @@ function VideoCall() {
                             <video id="remote-view-video" autoPlay></video>
                         </div>
                     </Column>
+                    {showDrawBoard && <Column flexGrow={4} flexBasis='auto'><Canvas /></Column>}
                 </div>
             </Row>
-
-            <div className="user-padding"></div>
-
-            <Canvas />
         </main >
     );
 }
