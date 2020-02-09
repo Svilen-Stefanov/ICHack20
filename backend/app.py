@@ -206,9 +206,7 @@ def get_subjects_with_topics():
 
 @sio.event
 def connect(sid, environ):
-    print("connect ", sid)
     sio.enter_room(sid, 'painters')
-    sio.emit('connection')
 
 @sio.event
 def paint(sid, data):
