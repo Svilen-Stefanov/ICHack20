@@ -4,6 +4,8 @@
 import React, { Component, useEffect, useState } from 'react';
 import cytoscape from 'cytoscape';
 import spread from 'cytoscape-spread';
+import uuid from 'uuid/v4';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
 
 import CytoscapeComponent from 'react-cytoscapejs';
 
@@ -20,7 +22,11 @@ class KnowledgeGraph extends Component {
             elements: [],
             layout: { name: 'cise' },
             style: {},
-            show: false
+            show: false,
+            friend_name: '',
+            friend_institution: '',
+            friend_profile_pic: '',
+            friend_skills: []
         };
     }
 
@@ -36,7 +42,6 @@ class KnowledgeGraph extends Component {
                     res = JSONBigInt.parse(res.data);
                     const friends = res.friends;
                     const myself = res.myself;
-                    // console.log(friends)
                     let elements = [{ data: {id: 1, label: myself.first + ' ' + myself.last }}];
                     let cluster_col = {};
                     let col_index = 0;
@@ -58,12 +63,14 @@ class KnowledgeGraph extends Component {
                         }
                         elements.push({
                             data: { 
-                                id: i + 2, label: friends[i].first + ' ' + friends[i].last,
+                                id: i + 2,
+                                pid: friends[i].id, 
+                                label: friends[i].first + ' ' + friends[i].last,
                                 color: cluster_col[friends[i].subject], shape: "Rectangle"
- 
+
                             }
                         })
-                        console.log(elements)
+
                         elements.push({
                             data: { source: 1, target: i + 2 }
                         })
@@ -112,13 +119,24 @@ class KnowledgeGraph extends Component {
                                 'height': '20px'
                             }).update();
                             this.cy.nodes().on('click', function(e){
-                                var clickedNode = e.target;
-
-                                // collection = collection.union(clickedNode);
-                              });
+                                let clickedNode = e.target;
+                                let data = clickedNode._private.data;
+                                axios.get('/profile/' + data.pid, { transformResponse: [data => data] })
+                                .then(res => {
+                                    res = JSONBigInt.parse(res.data);
+                                    console.log(res)
+                                    this.setState({
+                                        friend_name: res.first_name + ' ' + res.last_name,
+                                        friend_institution: res.institution,
+                                        friend_skills: res.skills,
+                                        friend_profile_pic: res.profile_pic
+                                    })
+                                    console.log(res);
+                                });
+                            }.bind(this));
                               
                         }
-                    })
+                    });
 
                 });
         }
@@ -126,10 +144,19 @@ class KnowledgeGraph extends Component {
     
     render() {
         cytoscape.use(spread);
+        const skillsList = this.state.friend_skills.map(skill => (
+            <li key={uuid()}><CheckBoxIcon fontSize={"small"} /> {skill.skill_name}: {"*".repeat(skill.experience_level)}</li>
+        ));
+
         return (
             <main className="knowledge-graph-container">
                 <div className="knowledge-graph-fg">
-                    {/* <div>{this.state.friend_name}</div> */}
+                    <img className="knowledge-pic" src={this.state.friend_profile_pic} />
+                    <div className="knowledge-name">{this.state.friend_name}</div>
+                    <div className="knowledge-instituion">{this.state.friend_institution}</div>
+                    {skillsList}
+                    {/* {this.state.friend_skills.map((skill, i) => (<div key={i}>{skill}</div>))} */}
+
                 </div>
                 <div className="knowledge-graph-bg">
                 {this.state.show ? <CytoscapeComponent 
