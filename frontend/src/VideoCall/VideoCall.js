@@ -174,7 +174,7 @@ function VideoCall() {
 
     const [targetUser, setTargetUser] = useState(null);
 
-    const [showDrawBoard, setShowDrawBoard] = useState(false);
+    const [showDrawBoard, setShowDrawBoard] = useState(true);
 
 
     /* Execute this code once the component has loaded */
@@ -322,25 +322,27 @@ function VideoCall() {
 
             <div className="user-padding"></div>
 
-            {targetUser ? <form id="credentials">
-                <Fab type="submit" color={"primary"} variant={"extended"} type="submit">Ring {targetUser.first_name}</Fab>
-            </form> :
-                < form id="credentials">
-                    <Fab type="submit" color={"success"} variant={"extended"} type="submit">Connect to Webex</Fab>
-                </form>}
-            <Fab disabled={"true"} id="connection-status" variant={"extended"}>disconnected</Fab>
-            <Fab color={"secondary"} variant={"extended"} id="hangup">Hangup</Fab>
-            <Fab color={"primary"} variant={"extended"} onClick={() => { setShowDrawBoard(!showDrawBoard) }}>Toggle DrawingBoard</Fab>
-
             <div className="user-padding"></div>
             <div className="Webex-video-container ">
-                <video className="Webex-video-stream-self" id="self-view" muted autoPlay></video>
-                <div className="Webex-video-stream-buddy">
+                <video className={showDrawBoard ? "Webex-video-stream-self" : "Webex-video-stream-self-max"} id="self-view" muted autoPlay></video>
+                <div className={showDrawBoard ? "Webex-video-stream-buddy" : "Webex-video-stream-buddy-max"}>
                     <audio id="remote-view-audio" autoPlay></audio>
                     <video id="remote-view-video" autoPlay></video>
                 </div>
-                <div className="Video-drawing-board">
+                <div className={showDrawBoard ? "Video-drawing-board" : "Video-drawing-board-max"}>
                     <Canvas />
+                </div>
+                <div className="Webex-video-buttons">
+                    {targetUser ? <form id="credentials" className="Webex-credential-forms">
+                        <Fab type="submit" color={"primary"} variant={"extended"} type="submit">Ring {targetUser.first_name}</Fab>
+                    </form> :
+                        < form id="credentials" className="Webex-credential-forms">
+                            <Fab type="submit" color={"success"} variant={"extended"} type="submit">Connect to Webex</Fab>
+                        </form>}
+                    <div className="user-padding"></div>
+                    <Fab color={"secondary"} variant={"extended"} id="hangup">Hangup</Fab>
+                    <Fab disabled={"true"} id="connection-status" variant={"extended"}>disconnected</Fab>
+                    <Fab color={"primary"} variant={"extended"} onClick={() => { setShowDrawBoard(!showDrawBoard) }}>Toggle DrawingBoard</Fab>
                 </div>
             </div>
         </main >

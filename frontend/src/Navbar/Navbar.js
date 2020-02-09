@@ -26,7 +26,20 @@ class Navbar extends Component {
         this.state = {
             searchValue: "",
             sideDrawerOpen: false,
-            showNav: true
+            showFilter: true,
+            showNav: true,
+            onRouteChanged: () => {
+                if (this.props.location.pathname === "/login") {
+                    this.setState({
+                        showNav: false
+                    });
+                }
+                if (this.props.location.pathname !== "/") {
+                    this.setState({
+                        showFilter: false
+                    });
+                }
+            }
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -35,12 +48,14 @@ class Navbar extends Component {
         console.log(this.props.location);
     }
 
-    componentDidMount() {
-        if (this.props.location.pathname === "/login") {
-            this.setState({
-                showNav: false
-            });
+    componentDidUpdate(prevProps) {
+        if (this.props.location !== prevProps.location) {
+            this.state.onRouteChanged()
         }
+    }
+
+    componentDidMount() {
+        this.state.onRouteChanged()
     }
 
     handleChange(e) {
@@ -67,7 +82,7 @@ class Navbar extends Component {
     }
 
     render() {
-        const { showNav } = this.state;
+        const { showNav, showFilter } = this.state;
 
         if (showNav) {
             return (
@@ -78,7 +93,7 @@ class Navbar extends Component {
                             <h1 className="Navbar-logo-text"> <SchoolIcon /> Study Buddy </h1>
                         </Link>
                     </div>
-                    <div>
+                    {showFilter && <div>
                         <form onSubmit={this.handleSubmit}>
                             <SearchIcon />
                             <input
@@ -90,7 +105,7 @@ class Navbar extends Component {
                                 onChange={this.handleChange}
                             />
                         </form>
-                    </div>
+                    </div>}
                     <ul className="Navbar-items">
                         <li><VideoCallButton /></li>
                         <li><SettingsIcon fontSize={"large"} onClick={this.handleClick} /></li>
